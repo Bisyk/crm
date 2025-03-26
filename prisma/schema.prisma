@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // A user can own multiple shops
+  ownedShops Shop[] @relation("ShopOwner")
+}
+
+model Shop {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  address     String?
+  phone       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationship with shop owner
+  owner   User   @relation("ShopOwner", fields: [ownerId], references: [id])
+  ownerId String
+
+  // Relationships with other models
+  employees Employee[]
+  customers Customer[]
+  products  Product[]
+  orders     Order[]
+}
+
+model Employee {
+  id        String  @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String  @unique
+  phone     String?
+
+  // An employee can work in multiple shops
+  shops Shop[]
+
+  // Additional employment details
+  position String?
+  salary   Decimal?
+  hireDate DateTime?
+
+  // Relationship with orders made by the employee
+  orders Order[]
+}
+
+model Customer {
+  id        String  @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String? @unique
+  phone     String?
+  address   String?
+
+  // A customer can be associated with multiple shops
+  shops Shop[]
+
+  // Relationship with customer's orders
+  orders Order[]
+}
+
+model Product {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  price       Decimal
+  stockCount  Int     @default(0)
+
+  // Product belongs to a specific shop
+  shop   Shop   @relation(fields: [shopId], references: [id])
+  shopId String
+
+  // Relationship with orders
+  ordersItems OrderItem[]
+}
+
+model Order {
+  id          String   @id @default(cuid())
+  orderDate    DateTime @default(now())
+  totalAmount Decimal
+
+  // Relationships with other models
+  shop   Shop   @relation(fields: [shopId], references: [id])
+  shopId String
+
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId String
+
+  customer   Customer @relation(fields: [customerId], references: [id])
+  customerId String
+
+  // Order can have multiple items
+  items OrderItem[]
+}
+
+model OrderItem {
+  id       String  @id @default(cuid())
+  quantity Int
+  price    Decimal
+
+  // Relationships
+  order   Order   @relation(fields: [orderId], references: [id])
+  orderId String
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+}
