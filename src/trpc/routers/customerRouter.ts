@@ -15,6 +15,7 @@ export const customerRouter = createTRPCRouter({
     )
     .mutation(async opts => {
       const customer = customerService.create(opts.input);
+
       if (!customer) {
         throw new Error("Failed to create customer");
       }

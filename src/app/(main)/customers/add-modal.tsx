@@ -12,6 +12,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Toaster, toast } from "sonner";
 
 import { useState } from "react";
 import { trpc } from "@/trpc/client";
@@ -33,8 +34,15 @@ export default function AddModal() {
       setEmail("");
       setPhone("");
       setAddress("");
-
+      
+      toast.success("Customer added successfully");
+      
       router.refresh();
+    },
+    onError: () => {
+      toast.error(
+        "Ooooops! Something went wrong. Customer not added. Please check your inputs and try again."
+      );
     },
   });
 
@@ -52,6 +60,7 @@ export default function AddModal() {
 
   return (
     <Dialog>
+      <Toaster />
       <div className="w-full flex justify-end mb-2">
         <DialogTrigger asChild>
           <Button variant="outline">Add Customer</Button>

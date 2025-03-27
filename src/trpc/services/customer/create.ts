@@ -30,10 +30,10 @@ export const create = async ({
       },
     });
 
-    return customer
+    return customer;
   } catch (error) {
     console.log("Failed to create customer");
     console.error(error);
-    return null;
+    throw new Error("Failed to create customer");
   }
 };
