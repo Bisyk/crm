@@ -36,7 +36,7 @@ export default function AddModal() {
       setAddress("");
       
       toast.success("Customer added successfully");
-      
+
       router.refresh();
     },
     onError: () => {
@@ -60,7 +60,7 @@ export default function AddModal() {
 
   return (
     <Dialog>
-      <Toaster />
+      <Toaster richColors  />
       <div className="w-full flex justify-end mb-2">
         <DialogTrigger asChild>
           <Button variant="outline">Add Customer</Button>
