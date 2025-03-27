@@ -1,7 +1,6 @@
 import prisma from "@/lib/prisma";
 import { createSession } from "@/lib/session";
 import { randomBytes, scrypt as _scrypt } from "crypto";
-import { redirect } from "next/navigation";
 import { promisify } from "util";
 
 const scrypt = promisify(_scrypt);

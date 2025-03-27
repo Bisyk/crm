@@ -27,4 +27,7 @@ export const authRouter = createTRPCRouter({
       }
       return { success: true };
     }),
+  logout: baseProcedure.mutation(async () => {
+    await authService.logout();
+  }),
 });
