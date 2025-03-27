@@ -22,7 +22,7 @@ export const getUser = cache(async () => {
   if (!session) return null;
 
   try {
-    const data = await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: {
         id: session.userId,
       },
@@ -32,8 +32,6 @@ export const getUser = cache(async () => {
         email: true,
       },
     });
-
-    const user = data[0];
 
     return user;
   } catch (error) {
