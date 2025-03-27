@@ -1,16 +1,40 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { trpc } from "@/trpc/client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const [storeName, setStoreName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const router = useRouter();
+
+  const mutation = trpc.auth.signup.useMutation({
+    onSuccess: () => {
+      router.push("/dashboard");
+    },
+  });
+
+  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    mutation.mutate({ email, password, name: storeName });
+  };
+
   return (
     <form
       className={cn("flex flex-col gap-6", className)}
+      onSubmit={handleSignup}
       {...props}
     >
       <div className="flex flex-col items-center gap-2 text-center">
@@ -23,6 +47,8 @@ export function SignupForm({
         <div className="grid gap-3">
           <Label htmlFor="email">Store Name</Label>
           <Input
+            value={storeName}
+            onChange={e => setStoreName(e.target.value)}
             id="store-name"
             type="text"
             placeholder="My Store"
@@ -32,6 +58,8 @@ export function SignupForm({
         <div className="grid gap-3">
           <Label htmlFor="email">Email</Label>
           <Input
+            value={email}
+            onChange={e => setEmail(e.target.value)}
             id="email"
             type="email"
             placeholder="m@example.com"
@@ -43,6 +71,8 @@ export function SignupForm({
             <Label htmlFor="password">Password</Label>
           </div>
           <Input
+            value={password}
+            onChange={e => setPassword(e.target.value)}
             id="password"
             type="password"
             required

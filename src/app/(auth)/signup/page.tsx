@@ -1,7 +1,8 @@
 import { GalleryVerticalEnd } from "lucide-react";
 
 import { SignupForm } from "@/components/signup-form";
-import { trpc } from "../../../../trpc/server";
+import { trpc } from "@/trpc/server";
+
 
 export default async function SignupPage() {
   const greeting = await trpc.hello({ text: "World" });
