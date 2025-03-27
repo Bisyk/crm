@@ -14,12 +14,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
   name      String
-  password  String 
+  password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -37,14 +36,14 @@ model Shop {
   updatedAt   DateTime @updatedAt
 
   // Relationship with shop owner
-  owner   User   @relation("ShopOwner", fields: [ownerId], references: [id])
+  owner   User   @relation("ShopOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId String
 
-  // Relationships with other models
   employees Employee[]
   customers Customer[]
+  leads     Lead[]
   products  Product[]
-  orders     Order[]
+  orders    Order[]
 }
 
 model Employee {
@@ -53,11 +52,11 @@ model Employee {
   lastName  String
   email     String  @unique
   phone     String?
+  role      String?
 
   // An employee can work in multiple shops
   shops Shop[]
 
-  // Additional employment details
   position String?
   salary   Decimal?
   hireDate DateTime?
@@ -74,11 +73,26 @@ model Customer {
   phone     String?
   address   String?
 
-  // A customer can be associated with multiple shops
-  shops Shop[]
+  // A customer belongs to a single shop (tenant)
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  shopId String
 
   // Relationship with customer's orders
   orders Order[]
+}
+
+model Lead {
+  id        String  @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String? @unique
+  phone     String?
+  interest  String?
+  notes     String?
+
+  // A lead belongs to a single shop (tenant)
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  shopId String
 }
 
 model Product {
@@ -89,7 +103,7 @@ model Product {
   stockCount  Int     @default(0)
 
   // Product belongs to a specific shop
-  shop   Shop   @relation(fields: [shopId], references: [id])
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
   shopId String
 
   // Relationship with orders
@@ -98,17 +112,17 @@ model Product {
 
 model Order {
   id          String   @id @default(cuid())
-  orderDate    DateTime @default(now())
+  orderDate   DateTime @default(now())
   totalAmount Decimal
 
-  // Relationships with other models
+  // Order is specific to a shop (tenant)
   shop   Shop   @relation(fields: [shopId], references: [id])
   shopId String
 
   employee   Employee @relation(fields: [employeeId], references: [id])
   employeeId String
 
-  customer   Customer @relation(fields: [customerId], references: [id])
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   customerId String
 
   // Order can have multiple items
@@ -121,7 +135,7 @@ model OrderItem {
   price    Decimal
 
   // Relationships
-  order   Order   @relation(fields: [orderId], references: [id])
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId String
 
   product   Product @relation(fields: [productId], references: [id])

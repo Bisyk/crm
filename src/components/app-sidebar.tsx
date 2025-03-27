@@ -34,7 +34,7 @@ const items = [
     url: "/dashboard",
     icon: LayoutDashboard,
   },
-  { title: "Clients", url: "/clients", icon: Users },
+  { title: "Customers", url: "/customers", icon: Users },
   { title: "Leads", url: "/leads", icon: Headset },
   { title: "Orders", url: "/orders", icon: CircleDollarSign },
   { title: "Products", url: "/products", icon: PackageSearch },

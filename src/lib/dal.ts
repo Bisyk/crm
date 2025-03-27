@@ -33,7 +33,29 @@ export const getUser = cache(async () => {
       },
     });
 
-    return user;
+    const shopsIds = await prisma.shop.findMany({
+      where: {
+        ownerId: session.userId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const chosenShop = await prisma.shop.findFirst({
+      where: {
+        ownerId: session.userId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return {
+      ...user,
+      chosenShopId: chosenShop?.id,
+      shopsIds,
+    };
   } catch (error) {
     console.log("Failed to fetch user");
     return null;
