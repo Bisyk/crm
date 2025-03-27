@@ -9,10 +9,12 @@ export const signup = async ({
   email,
   password,
   name,
+  shopName,
 }: {
   email: string;
   password: string;
   name: string;
+  shopName: string;
 }) => {
   const salt = randomBytes(8).toString("hex");
 
@@ -26,6 +28,13 @@ export const signup = async ({
         email,
         password: result,
         name,
+      },
+    });
+
+    const shop = await prisma.shop.create({
+      data: {
+        name: shopName,
+        ownerId: user.id,
       },
     });
 

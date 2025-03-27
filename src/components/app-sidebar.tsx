@@ -26,6 +26,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { trpc } from "@/trpc/client";
 
 const items = [
   {
@@ -40,6 +41,7 @@ const items = [
 ];
 export function AppSidebar({
   userInfo,
+  shopsInfo,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   userInfo: {
@@ -48,9 +50,12 @@ export function AppSidebar({
     avatar: string;
     id: string;
   };
+  shopsInfo: {
+    id: string;
+    name: string;
+  }[];
 }) {
   const data = {
-    shops: [{ name: "Shop", logo: Store, plan: "Free" }],
     user: {
       name: userInfo.name,
       email: userInfo.email,
@@ -64,7 +69,7 @@ export function AppSidebar({
       {...props}
     >
       <SidebarHeader>
-        <TeamSwitcher teams={data.shops} />
+        <TeamSwitcher teams={shopsInfo} />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

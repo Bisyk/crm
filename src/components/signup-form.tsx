@@ -13,9 +13,10 @@ export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const [storeName, setStoreName] = useState("");
+  const [shopName, setShopName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
 
   const router = useRouter();
 
@@ -28,7 +29,7 @@ export function SignupForm({
   const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    mutation.mutate({ email, password, name: storeName });
+    mutation.mutate({ email, password, name, shopName });
   };
 
   return (
@@ -45,13 +46,24 @@ export function SignupForm({
       </div>
       <div className="grid gap-6">
         <div className="grid gap-3">
-          <Label htmlFor="email">Store Name</Label>
+          <Label htmlFor="email">Shop Name</Label>
           <Input
-            value={storeName}
-            onChange={e => setStoreName(e.target.value)}
-            id="store-name"
+            value={shopName}
+            onChange={e => setShopName(e.target.value)}
+            id="shop-name"
             type="text"
-            placeholder="My Store"
+            placeholder="My Shop"
+            required
+          />
+        </div>
+        <div className="grid gap-3">
+          <Label htmlFor="email">Your Name</Label>
+          <Input
+            value={name}
+            onChange={e => setName(e.target.value)}
+            id="name"
+            type="text"
+            placeholder="Yaroslav"
             required
           />
         </div>

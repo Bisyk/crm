@@ -8,7 +8,8 @@ export const authRouter = createTRPCRouter({
       z.object({
         email: z.string().email(),
         password: z.string().min(8),
-        name: z.string().min(3),
+        name: z.string().min(2),
+        shopName: z.string().min(2),
       })
     )
     .mutation(async opts => {
