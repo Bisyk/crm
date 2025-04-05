@@ -28,4 +28,13 @@ export const productRouter = createTRPCRouter({
     const product = await productService.getAll();
     return product;
   }),
+  delete: baseProcedure.input(z.string()).mutation(async opts => {
+    try {
+      const product = await productService.deleteById(opts.input);
+      return product;
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      throw new Error("Failed to delete product. Please try again later.");
+    }
+  }),
 });

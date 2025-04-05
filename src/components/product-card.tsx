@@ -9,6 +9,7 @@ import {
 import NoImage from "../../public/no-image.webp";
 import { BoxIcon } from "lucide-react";
 import { Button } from "./ui/button";
+import DeleteDialog from "@/app/(main)/products/products-tab/delete-dialog";
 
 declare interface ProductCardProps {
   id: string;
@@ -21,6 +22,7 @@ declare interface ProductCardProps {
 }
 
 export function ProductCard({
+  id,
   name,
   description,
   price,
@@ -84,7 +86,7 @@ export function ProductCard({
         </div>
       </CardContent>
       <CardFooter className="flex justify-end items-center gap-2">
-        <Button>Delete</Button>
+        <DeleteDialog id={id}>Delete</DeleteDialog>
         <Button variant="outline">Edit</Button>
       </CardFooter>
     </Card>

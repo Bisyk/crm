@@ -93,7 +93,7 @@ export default function AddModal() {
       </div>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Customer</DialogTitle>
+          <DialogTitle>Add Product</DialogTitle>
           <DialogDescription>
             Fill in the details below to add a new product to your database.
             Ensure all fields are completed accurately.
@@ -147,7 +147,7 @@ export default function AddModal() {
             onChange={e => setPrice(Number(e.target.value))}
             id="product-price"
             placeholder="1999.99"
-            type="number"
+            type="text"
             required
             className="col-span-3"
           />
@@ -164,7 +164,7 @@ export default function AddModal() {
             onChange={e => setQuantity(Number(e.target.value))}
             id="product-quantity"
             placeholder="10"
-            type="number"
+            type="text"
             required
             className="col-span-3"
           />
@@ -244,7 +244,7 @@ export default function AddModal() {
             onChange={e => setLowStockThreshold(Number(e.target.value))}
             id="product-low-stock"
             placeholder="5"
-            type="number"
+            type="text"
             required
             className="col-span-3"
           />
