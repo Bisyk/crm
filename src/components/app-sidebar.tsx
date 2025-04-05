@@ -7,6 +7,7 @@ import {
   Headset,
   LayoutDashboard,
   PackageSearch,
+  ShieldUser,
   Store,
   Users,
 } from "lucide-react";
@@ -27,8 +28,22 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { trpc } from "@/trpc/client";
+import { userInfo } from "os";
 
-const items = [
+const itemsForAdmin = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: LayoutDashboard,
+  },
+  { title: "Customers", url: "/customers", icon: Users },
+  { title: "Leads", url: "/leads", icon: Headset },
+  { title: "Orders", url: "/orders", icon: CircleDollarSign },
+  { title: "Products", url: "/products", icon: PackageSearch },
+  { title: "Employees", url: "/employees", icon: ShieldUser },
+];
+
+const itemsForEmployee = [
   {
     title: "Dashboard",
     url: "/dashboard",
@@ -39,9 +54,9 @@ const items = [
   { title: "Orders", url: "/orders", icon: CircleDollarSign },
   { title: "Products", url: "/products", icon: PackageSearch },
 ];
+
 export function AppSidebar({
   userInfo,
-  shopsInfo,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   userInfo: {
@@ -49,11 +64,12 @@ export function AppSidebar({
     email: string;
     avatar: string;
     id: string;
+    type: "admin" | "employee";
+    shop: {
+      id: string;
+      name: string;
+    };
   };
-  shopsInfo: {
-    id: string;
-    name: string;
-  }[];
 }) {
   const data = {
     user: {
@@ -63,13 +79,15 @@ export function AppSidebar({
     },
   };
 
+  const items = userInfo.type === "admin" ? itemsForAdmin : itemsForEmployee;
+
   return (
     <Sidebar
       collapsible="icon"
       {...props}
     >
       <SidebarHeader>
-        <TeamSwitcher teams={shopsInfo} />
+        <TeamSwitcher teams={[{ name: userInfo.shop.name }]} />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

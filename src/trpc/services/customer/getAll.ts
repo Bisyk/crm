@@ -3,11 +3,11 @@ import prisma from "@/lib/prisma";
 
 export const getAll = async () => {
   try {
-    const { chosenShopId: shopId } = await getUser();
+    const { shop } = await getUser();
 
     const customers = prisma.customer.findMany({
       where: {
-        shopId,
+        shopId: shop.id,
       },
     });
 

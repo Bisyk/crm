@@ -30,31 +30,58 @@ export const getUser = cache(async () => {
         id: true,
         name: true,
         email: true,
+        type: true,
       },
     });
 
-    const shopsIds = await prisma.shop.findMany({
-      where: {
-        ownerId: session.userId,
-      },
-      select: {
-        id: true,
-      },
-    });
+    console.log("user: ", user);
 
-    const chosenShop = await prisma.shop.findFirst({
-      where: {
-        ownerId: session.userId,
-      },
-      select: {
-        id: true,
-      },
-    });
+    let shop;
+
+    if (user.type === "admin") {
+      try {
+        shop = await prisma.shop.findFirst({
+          where: {
+            ownerId: user.id,
+          },
+        });
+      } catch (error) {
+        console.log("Failed to fetch shop for admin user");
+        console.error(error);
+      }
+    }
+
+    if (user.type === "employee") {
+      try {
+        const employee = await prisma.employee.findFirst({
+          where: {
+            email: user.email,
+          },
+        });
+
+        shop = await prisma.shop.findFirst({
+          where: {
+            employees: {
+              some: {
+                id: employee.id,
+              },
+            },
+          },
+        });
+      } catch (error) {
+        console.log("Failed to fetch shop for employee user");
+        console.error(error);
+      }
+    }
+
+    console.log("shop: ", shop);
 
     return {
       ...user,
-      chosenShopId: chosenShop?.id,
-      shopsIds,
+      shop: {
+        id: shop?.id,
+        name: shop?.name,
+      },
     };
   } catch (error) {
     console.log("Failed to fetch user");

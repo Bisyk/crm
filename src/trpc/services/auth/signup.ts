@@ -28,6 +28,7 @@ export const signup = async ({
         email,
         password: result,
         name,
+        type: 'admin',
       },
     });
 

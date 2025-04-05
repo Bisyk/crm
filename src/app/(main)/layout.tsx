@@ -14,14 +14,13 @@ export default async function MainLayout({
   children,
 }: React.PropsWithChildren<{}>) {
   const user = await getUser();
-  const shops = await trpc.shop.getByUserId(user.id);
-
+  console.log(user);
+  
   return (
     <TRPCProvider>
       <SidebarProvider>
         <AppSidebar
           userInfo={user}
-          shopsInfo={shops}
         />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">

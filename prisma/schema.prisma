@@ -21,6 +21,7 @@ model User {
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  type      String // "ADMIN" or "EMPLOYEE"
 
   // A user can own multiple shops
   ownedShops Shop[] @relation("ShopOwner")
@@ -53,6 +54,7 @@ model Employee {
   email     String  @unique
   phone     String?
   role      String?
+  shopId    String
 
   // An employee can work in multiple shops
   shops Shop[]
@@ -96,15 +98,25 @@ model Lead {
 }
 
 model Product {
-  id          String  @id @default(cuid())
+  id          String   @id @default(cuid())
   name        String
   description String?
   price       Decimal
-  stockCount  Int     @default(0)
+  stockCount  Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  imageUrl    String?
+  brandId     String?
+  categoryId  String?
+  lowStockThreshold Int? @default(0)
 
   // Product belongs to a specific shop
   shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
   shopId String
+
+  // Relationships with brand and category
+  brand    Brand?    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   // Relationship with orders
   ordersItems OrderItem[]
@@ -140,4 +152,24 @@ model OrderItem {
 
   product   Product @relation(fields: [productId], references: [id])
   productId String
+}
+
+model Brand {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  shopId  String
+  Product Product[]
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  shopId  String
+  Product Product[]
 }

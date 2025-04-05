@@ -17,7 +17,7 @@ export const create = async ({
   address,
 }: CreateCustomerInput) => {
   try {
-    const { chosenShopId: shopId } = await getUser();
+    const { shop } = await getUser();
 
     const customer = await prisma.customer.create({
       data: {
@@ -26,7 +26,7 @@ export const create = async ({
         email,
         phone,
         address,
-        shopId,
+        shopId: shop.id,
       },
     });
 
