@@ -37,4 +37,40 @@ export const productRouter = createTRPCRouter({
       throw new Error("Failed to delete product. Please try again later.");
     }
   }),
+  update: baseProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        data: z.object({
+          name: z.string(),
+          description: z.string(),
+          price: z.number(),
+          stockCount: z.number(),
+          lowStockThreshold: z.number().optional(),
+          brandId: z.string(),
+          categoryId: z.string(),
+          imageUrl: z.string().optional(),
+        }),
+      })
+    )
+    .mutation(async opts => {
+      const { id, data } = opts.input;
+      console.log("data to update", data);
+      const product = await productService.update(id, data);
+
+      if (!product) {
+        throw new Error("Failed to update product");
+      }
+
+      return product;
+    }),
+  getById: baseProcedure.input(z.string()).query(async opts => {
+    const product = await productService.getById(opts.input);
+
+    if (!product) {
+      throw new Error("Product not found");
+    }
+
+    return product;
+  }),
 });

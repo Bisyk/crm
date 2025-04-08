@@ -1,6 +1,9 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import DeleteDialog from "./delete-dialog";
+import { Trash } from "lucide-react";
+import AddModal from "./add-modal";
 
 export type Product = {
   id: string;
@@ -25,11 +28,15 @@ export type Product = {
 export const columns: ColumnDef<Product>[] = [
   {
     accessorKey: "name",
-    header: "Category Name",
+    header: "Name",
   },
   {
     accessorKey: "description",
     header: "Description",
+    cell: ({ row }) => {
+      const description = row.getValue("description") as string;
+      return <div className="max-w-[35vmin] truncate">{description}</div>;
+    },
   },
   {
     accessorKey: "price",
@@ -54,5 +61,19 @@ export const columns: ColumnDef<Product>[] = [
   {
     accessorKey: "updatedAt",
     header: "Updated At",
+  },
+  {
+    accessorKey: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      const id = row.getValue("id") as string;
+      return (
+        <div className="flex gap-2">
+          <DeleteDialog id={id}>
+            <Trash />
+          </DeleteDialog>
+        </div>
+      );
+    },
   },
 ];

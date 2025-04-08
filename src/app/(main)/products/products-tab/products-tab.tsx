@@ -19,7 +19,7 @@ export default function ProductsTab() {
         className="w-full flex justify-end items-end"
       >
         <div className="flex gap-2">
-          <AddModal />
+          <AddModal>Add Product</AddModal>
           <TabsList className="">
             <TabsTrigger value="grid">
               <LayoutGrid />

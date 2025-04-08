@@ -23,10 +23,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Toaster, toast } from "sonner";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { trpc } from "@/trpc/client";
 
-export default function AddModal() {
+interface AddModalProps {
+  id?: string;
+  children?: React.ReactNode;
+}
+
+export default function AddModal({ id, children }: AddModalProps) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(1);
@@ -55,9 +60,23 @@ export default function AddModal() {
 
       utils.product.getAll.invalidate();
     },
-    onError: () => {
+    onError: error => {
+      console.log(error);
       toast.error(
         "Ooooops! Something went wrong. Product not added. Please check your inputs and try again."
+      );
+    },
+  });
+
+  const updateMutation = trpc.product.update.useMutation({
+    onSuccess: () => {
+      toast.success("Product updated successfully");
+
+      utils.product.getAll.invalidate();
+    },
+    onError: () => {
+      toast.error(
+        "Ooooops! Something went wrong. Product not updated. Please check your inputs and try again."
       );
     },
   });
@@ -65,8 +84,24 @@ export default function AddModal() {
   const { data: categories } = trpc.category.getAll.useQuery();
   const { data: brands } = trpc.brand.getAll.useQuery();
 
-  console.log(categories);
-  console.log(brands);
+  if (id) {
+    const { data } = trpc.product.getById.useQuery(id);
+
+    useEffect(() => {
+      if (data) {
+        console.log(data);
+
+        setName(data.name);
+        setDescription(data.description);
+        setPrice(Number(data.price));
+        setQuantity(Number(data.stockCount));
+        setCategoryId(data.categoryId);
+        setBrandId(data.brandId);
+        setImageUrl(data.image);
+        setLowStockThreshold(Number(data.lowStockThreshold));
+      }
+    }, [data]);
+  }
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,12 +118,32 @@ export default function AddModal() {
     });
   };
 
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!id) return;
+
+    updateMutation.mutate({
+      id,
+      data: {
+        name,
+        description,
+        price,
+        stockCount: quantity,
+        lowStockThreshold,
+        categoryId,
+        brandId,
+        imageUrl,
+      },
+    });
+  };
+
   return (
     <Dialog>
       <Toaster richColors />
-      <div className="w-full flex justify-end mb-2">
+      <div className="flex justify-end">
         <DialogTrigger asChild>
-          <Button variant="outline">Add Product</Button>
+          <Button variant="outline">{children}</Button>
         </DialogTrigger>
       </div>
       <DialogContent className="sm:max-w-[425px]">
@@ -176,7 +231,10 @@ export default function AddModal() {
           >
             Category
           </Label>
-          <Select onValueChange={value => setCategoryId(value)}>
+          <Select
+            onValueChange={value => setCategoryId(value)}
+            value={categoryId}
+          >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select Category" />
             </SelectTrigger>
@@ -199,7 +257,10 @@ export default function AddModal() {
           >
             Brand
           </Label>
-          <Select onValueChange={value => setBrandId(value)}>
+          <Select
+            onValueChange={value => setBrandId(value)}
+            value={brandId}
+          >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select Brand" />
             </SelectTrigger>
@@ -251,14 +312,24 @@ export default function AddModal() {
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button
-              type="submit"
-              onClick={e => {
-                handleCreate(e);
-              }}
-            >
-              Add Product
-            </Button>
+            {id ? (
+              <Button
+                onClick={e => {
+                  handleUpdate(e);
+                }}
+              >
+                Update Product
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                onClick={e => {
+                  handleCreate(e);
+                }}
+              >
+                Add Product
+              </Button>
+            )}
           </DialogClose>
         </DialogFooter>
       </DialogContent>

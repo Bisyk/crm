@@ -10,6 +10,7 @@ import NoImage from "../../public/no-image.webp";
 import { BoxIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import DeleteDialog from "@/app/(main)/products/products-tab/delete-dialog";
+import AddModal from "@/app/(main)/products/products-tab/add-modal";
 
 declare interface ProductCardProps {
   id: string;
@@ -44,7 +45,7 @@ export function ProductCard({
             <p className="text-center">In Stock</p>
           </div>
         )}
-        {stockCount < lowStockThreshold && (
+        {stockCount < lowStockThreshold && stockCount > 0 && (
           <div className="bg-orange-100 text-orange-900 text-sm px-4 rounded border border-orange-200">
             <p className="text-center">Low Stocks</p>
           </div>
@@ -86,8 +87,8 @@ export function ProductCard({
         </div>
       </CardContent>
       <CardFooter className="flex justify-end items-center gap-2">
+        <AddModal id={id}>Edit</AddModal>
         <DeleteDialog id={id}>Delete</DeleteDialog>
-        <Button variant="outline">Edit</Button>
       </CardFooter>
     </Card>
   );
