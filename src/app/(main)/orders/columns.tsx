@@ -2,6 +2,8 @@
 
 import { formatDate } from "@/utils/time/formatDate";
 import { ColumnDef } from "@tanstack/react-table";
+import AddModal from "./add-modal";
+import { Pencil } from "lucide-react";
 
 export type Order = {
   id: string;
@@ -53,5 +55,19 @@ export const columns: ColumnDef<Order>[] = [
   {
     accessorKey: "totalAmount",
     header: "Total Amount",
+  },
+  {
+    accessorKey: "id",
+    header: "Actions",
+    cell: ({ row }) => {
+      const id = row.getValue("id") as string;
+      return (
+        <div className="flex">
+          <AddModal id={id}>
+            <Pencil />
+          </AddModal>
+        </div>
+      );
+    },
   },
 ];

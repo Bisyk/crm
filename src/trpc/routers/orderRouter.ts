@@ -10,18 +10,51 @@ export const orderRouter = createTRPCRouter({
         customerId: z.string(),
         employeeId: z.string(),
         totalAmount: z.number(),
+        orderItems: z.array(
+          z.object({
+            quantity: z.number(),
+            price: z.string(),
+            id: z.string(),
+          })
+        ),
       })
     )
     .mutation(async opts => {
-      const order = await orderService.create(opts.input);
+      try {
+        const order = await orderService.create(opts.input);
 
-      if (!order) {
+        return order;
+      } catch (error) {
+        console.log(error);
         throw new Error("Failed to create order");
       }
-      return order;
+    }),
+  update: baseProcedure
+    .input(
+      z.object({
+        orderDate: z.string(),
+        customerId: z.string(),
+        employeeId: z.string(),
+        totalAmount: z.number(),
+        orderId: z.string(),
+        orderItems: z.array(
+          z.object({
+            quantity: z.number(),
+            price: z.string(),
+            id: z.string(),
+          })
+        ),
+      })
+    )
+    .mutation(async opts => {
+      const updatedOrder = await orderService.update(opts.input);
     }),
   getAll: baseProcedure.query(async () => {
     const orders = await orderService.getAll();
     return orders;
+  }),
+  getById: baseProcedure.input(z.string()).query(async opts => {
+    const order = await orderService.getById(opts.input);
+    return order;
   }),
 });

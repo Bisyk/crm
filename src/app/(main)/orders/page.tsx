@@ -8,12 +8,10 @@ import AddModal from "./add-modal";
 export default function OrdersPage() {
   const { data, error, isLoading } = trpc.order.getAll.useQuery();
 
-  console.log(data);
-
   return (
     <div className="container mx-auto p-4">
       <div>
-        <AddModal />
+        <AddModal>Add Order</AddModal>
       </div>
       {data && !isLoading && (
         <DataTable

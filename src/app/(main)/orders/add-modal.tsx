@@ -26,7 +26,12 @@ import {
 import { Card } from "@/components/ui/card";
 import { Trash2 } from "lucide-react";
 
-export default function AddModal() {
+interface AddModalProps {
+  id?: string;
+  children: React.ReactNode;
+}
+
+export default function AddModal({ id, children }: AddModalProps) {
   const [orderDate, setOrderDate] = useState("");
   const [customerId, setCustomerId] = useState<string | "">("");
   const [employeeId, setEmployeeId] = useState<string | "">("");
@@ -54,7 +59,23 @@ export default function AddModal() {
   const { data: employees } = trpc.employee.getAll.useQuery();
   const { data: products } = trpc.product.getAll.useQuery();
 
+  if (id) {
+    const { data: order } = trpc.order.getById.useQuery(id);
 
+    const { data: orderItems } = trpc.orderItem.getAllByOrderId.useQuery(id);
+
+    useEffect(() => {
+      if (order && orderItems) {
+        const dateObj = new Date(order.orderDate);
+        const formattedDate = dateObj.toISOString().split("T")[0];
+
+        setOrderDate(formattedDate);
+        setCustomerId(order.customerId);
+        setEmployeeId(order.employeeId);
+        setAddedProducts(orderItems);
+      }
+    }, [order]);
+  }
 
   const mutation = trpc.order.create.useMutation({
     onSuccess: () => {
@@ -67,9 +88,24 @@ export default function AddModal() {
 
       utils.order.getAll.invalidate();
     },
-    onError: () => {
+    onError: error => {
+      console.log(error);
       toast.error(
         "Ooooops! Something went wrong. Product not added. Please check your inputs and try again."
+      );
+    },
+  });
+
+  const updateMutation = trpc.order.update.useMutation({
+    onSuccess: () => {
+      toast.success("Product added successfully");
+
+      utils.order.getAll.invalidate();
+    },
+    onError: error => {
+      console.log(error);
+      toast.error(
+        "Ooooops! Something went wrong. Product not edited. Please check your inputs and try again."
       );
     },
   });
@@ -125,7 +161,23 @@ export default function AddModal() {
       customerId,
       employeeId,
       totalAmount,
+      orderItems: addedProducts,
     });
+  };
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (id) {
+      updateMutation.mutate({
+        orderDate,
+        customerId,
+        employeeId,
+        totalAmount,
+        orderItems: addedProducts,
+        orderId: id,
+      });
+    }
   };
 
   return (
@@ -133,7 +185,7 @@ export default function AddModal() {
       <Toaster richColors />
       <div className="w-full flex justify-end mb-2">
         <DialogTrigger asChild>
-          <Button variant="outline">Add Order</Button>
+          <Button variant="outline">{children}</Button>
         </DialogTrigger>
       </div>
       <DialogContent className="max-w-[425px] md:max-w-[600px] lg:max-w-[800px]">
@@ -295,11 +347,17 @@ export default function AddModal() {
           <DialogClose asChild>
             <Button
               type="submit"
-              onClick={e => {
-                handleCreate(e);
-              }}
+              onClick={
+                id
+                  ? e => {
+                      handleUpdate(e);
+                    }
+                  : e => {
+                      handleCreate(e);
+                    }
+              }
             >
-              Add Order
+              {id ? "Edit Order" : "Add Order"}
             </Button>
           </DialogClose>
         </DialogFooter>

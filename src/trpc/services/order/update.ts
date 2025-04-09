@@ -1,45 +1,56 @@
-import { getUser } from "@/lib/dal";
 import prisma from "@/lib/prisma";
 import { CreateOrderItemInput } from "../orderItem";
 import * as orderItemService from "../orderItem";
 
-interface CreateOrderInput {
+interface UpdateOrderItemInput {
+  quantity: number;
+  price: string;
+  id: string;
+}
+
+interface UpdateOrderInput {
   orderDate: string;
   customerId: string;
   employeeId: string;
   totalAmount: number;
-  orderItems: CreateOrderItemInput[];
+  orderId: string;
+  orderItems: UpdateOrderItemInput[];
 }
 
-export const create = async ({
+export const update = async ({
   orderDate,
   customerId,
   employeeId,
   totalAmount,
   orderItems,
-}: CreateOrderInput) => {
-  const { shop } = await getUser();
-
+  orderId,
+}: UpdateOrderInput) => {
   const isoTimeString = new Date(orderDate).toISOString();
 
   try {
-    const order = await prisma.order.create({
+    const updatedOrder = await prisma.order.update({
+      where: {
+        id: orderId,
+      },
       data: {
         orderDate: isoTimeString,
         customerId,
         employeeId,
         totalAmount,
-        shopId: shop.id,
       },
     });
 
+    if (!updatedOrder) return;
+
+    orderItemService.deleteAllByOrderId(orderId);
+
     orderItems.forEach(async i => {
       const createdOrderItem = orderItemService.create(
-        Object.assign(i, { orderId: order.id })
+        Object.assign(i, { orderId })
       );
     });
 
-    return order;
+    return updatedOrder;
   } catch (error) {
     console.error(error);
   }
