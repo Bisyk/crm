@@ -9,7 +9,7 @@ export default function CategoriesTab() {
   const { data, error, isLoading } = trpc.category.getAll.useQuery();
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto">
       <div className="w-full flex justify-end mb-2">
         <AddModal />
       </div>
