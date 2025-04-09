@@ -1,5 +1,6 @@
 "use client";
 
+import { formatDate } from "@/utils/time/formatDate";
 import { ColumnDef } from "@tanstack/react-table";
 
 export type Order = {
@@ -14,6 +15,10 @@ export const columns: ColumnDef<Order>[] = [
   {
     accessorKey: "orderDate",
     header: "Order Date",
+    cell: ({ row }) => {
+      const orderDate = row.getValue("orderDate") as string;
+      return <span>{formatDate(orderDate)}</span>;
+    },
   },
   {
     accessorKey: "customer",

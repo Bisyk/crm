@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import DeleteDialog from "./delete-dialog";
 import { Trash } from "lucide-react";
 import AddModal from "./add-modal";
+import { formatDate } from "@/utils/time/formatDate";
 
 export type Product = {
   id: string;
@@ -57,10 +58,18 @@ export const columns: ColumnDef<Product>[] = [
   {
     accessorKey: "createdAt",
     header: "Created At",
+    cell: ({ row }) => {
+      const createdAt = row.getValue("createdAt") as string;
+      return <span>{formatDate(createdAt)}</span>;
+    },
   },
   {
     accessorKey: "updatedAt",
     header: "Updated At",
+    cell: ({ row }) => {
+      const updatedAt = row.getValue("updatedAt") as string;
+      return <span>{formatDate(updatedAt)}</span>;
+    },
   },
   {
     accessorKey: "actions",

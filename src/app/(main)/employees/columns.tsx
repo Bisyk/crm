@@ -1,5 +1,6 @@
 "use client";
 
+import { formatDate } from "@/utils/time/formatDate";
 import { ColumnDef } from "@tanstack/react-table";
 
 export type Employee = {
@@ -46,5 +47,9 @@ export const columns: ColumnDef<Employee>[] = [
   {
     accessorKey: "hireDate",
     header: "Hire Date",
+    cell: ({ row }) => {
+      const hireDate = row.getValue("hireDate") as string;
+      return <span>{formatDate(hireDate)}</span>;
+    },
   },
 ];
