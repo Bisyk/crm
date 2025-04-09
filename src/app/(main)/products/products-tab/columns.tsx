@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import DeleteDialog from "./delete-dialog";
-import { Trash } from "lucide-react";
+import { Pencil, Trash } from "lucide-react";
 import AddModal from "./add-modal";
 import { formatDate } from "@/utils/time/formatDate";
 
@@ -72,7 +72,7 @@ export const columns: ColumnDef<Product>[] = [
     },
   },
   {
-    accessorKey: "actions",
+    accessorKey: "id",
     header: "Actions",
     cell: ({ row }) => {
       const id = row.getValue("id") as string;
@@ -81,6 +81,9 @@ export const columns: ColumnDef<Product>[] = [
           <DeleteDialog id={id}>
             <Trash />
           </DeleteDialog>
+          <AddModal id={id}>
+            <Pencil />
+          </AddModal>
         </div>
       );
     },
