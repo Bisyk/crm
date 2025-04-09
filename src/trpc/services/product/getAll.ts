@@ -13,8 +13,6 @@ export const getAll = async () => {
       },
     });
 
-    console.log(products);
-
     return products;
   } catch (error) {
     console.error("Error fetching products:", error);

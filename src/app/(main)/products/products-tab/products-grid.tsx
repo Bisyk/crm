@@ -5,7 +5,7 @@ export default function ProductsGrid() {
   const { data: products } = trpc.product.getAll.useQuery();
 
   return (
-    <div className="flex flex-wrap gap-4 justify-center md:justify-center lg:justify-start items-center mb-4">
+    <div className="flex flex-wrap gap-4 justify-center md:justify-center lg:justify-between items-center mb-4">
       {products &&
         products.map(p => (
           <ProductCard

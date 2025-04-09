@@ -14,7 +14,6 @@ export default async function MainLayout({
   children,
 }: React.PropsWithChildren<{}>) {
   const user = await getUser();
-  console.log(user);
   
   return (
     <TRPCProvider>

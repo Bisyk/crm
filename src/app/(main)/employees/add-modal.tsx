@@ -82,7 +82,7 @@ export default function AddModal() {
         <DialogHeader>
           <DialogTitle>Add Employee</DialogTitle>
           <DialogDescription>
-            Fill in the details below to add a new employee to your database.
+            Fill in the details below to add a new employee.
             Ensure all fields are completed accurately.
           </DialogDescription>
         </DialogHeader>

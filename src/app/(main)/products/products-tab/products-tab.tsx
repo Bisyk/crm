@@ -13,7 +13,7 @@ export default function ProductsTab() {
   const { data, error, isLoading } = trpc.product.getAll.useQuery();
 
   return (
-    <div>
+    <div className="container mx-auto p-4">
       <Tabs
         defaultValue="grid"
         className="w-full flex justify-end items-end"

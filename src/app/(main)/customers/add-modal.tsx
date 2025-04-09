@@ -70,7 +70,7 @@ export default function AddModal() {
         <DialogHeader>
           <DialogTitle>Add Customer</DialogTitle>
           <DialogDescription>
-            Fill in the details below to add a new customer to your database.
+            Fill in the details below to add a new customer.
             Ensure all fields are completed accurately.
           </DialogDescription>
         </DialogHeader>

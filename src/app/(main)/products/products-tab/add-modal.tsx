@@ -61,7 +61,7 @@ export default function AddModal({ id, children }: AddModalProps) {
       utils.product.getAll.invalidate();
     },
     onError: error => {
-      console.log(error);
+
       toast.error(
         "Ooooops! Something went wrong. Product not added. Please check your inputs and try again."
       );
@@ -89,7 +89,6 @@ export default function AddModal({ id, children }: AddModalProps) {
 
     useEffect(() => {
       if (data) {
-        console.log(data);
 
         setName(data.name);
         setDescription(data.description);
@@ -150,7 +149,7 @@ export default function AddModal({ id, children }: AddModalProps) {
         <DialogHeader>
           <DialogTitle>Add Product</DialogTitle>
           <DialogDescription>
-            Fill in the details below to add a new product to your database.
+            Fill in the details below to add a new product.
             Ensure all fields are completed accurately.
           </DialogDescription>
         </DialogHeader>

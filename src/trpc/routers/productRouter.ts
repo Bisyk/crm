@@ -55,7 +55,6 @@ export const productRouter = createTRPCRouter({
     )
     .mutation(async opts => {
       const { id, data } = opts.input;
-      console.log("data to update", data);
       const product = await productService.update(id, data);
 
       if (!product) {

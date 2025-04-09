@@ -77,7 +77,7 @@
 //         <DialogHeader>
 //           <DialogTitle>Add Product</DialogTitle>
 //           <DialogDescription>
-//             Fill in the details below to add a new product to your database.
+//             Fill in the details below to add a new product.
 //             Ensure all fields are completed accurately.
 //           </DialogDescription>
 //         </DialogHeader>

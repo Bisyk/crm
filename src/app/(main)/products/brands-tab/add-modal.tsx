@@ -26,7 +26,7 @@ export default function AddModal() {
     onSuccess: () => {
       setName("");
 
-      toast.success("Customer added successfully");
+      toast.success("Brand added successfully");
 
       utils.brand.getAll.invalidate();
     },
@@ -57,7 +57,7 @@ export default function AddModal() {
         <DialogHeader>
           <DialogTitle>Add Customer</DialogTitle>
           <DialogDescription>
-            Fill in the details below to add a new brand to your database.
+            Fill in the details below to add a new brand.
             Ensure all fields are completed accurately.
           </DialogDescription>
         </DialogHeader>
