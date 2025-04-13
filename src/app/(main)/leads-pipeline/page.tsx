@@ -20,7 +20,7 @@ export default function LeadsPipeline() {
   });
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto overflow-x-clip">
       <DndContext
         collisionDetection={closestCorners}
         onDragEnd={handleDragEnd}
