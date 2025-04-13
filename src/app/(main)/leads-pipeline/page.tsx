@@ -101,8 +101,6 @@ export default function LeadsPipeline() {
     console.log("drag end active: ", active);
     console.log("drag end over: ", over);
 
-    handleStageChange(active.id, over.id);
-
     if (!over || active.id === over.id) return;
 
     const activeContainer = findContainerWithLead(active.id.toString());
@@ -115,17 +113,7 @@ export default function LeadsPipeline() {
     if (!activeContainer || !overContainer) return;
 
     if (activeContainer !== overContainer) {
-      setLeads(prev => {
-        const updated = { ...prev };
-        //@ts-ignore
-        updated[activeContainer] = updated[activeContainer].filter(
-          //@ts-ignore
-          id => id !== active.id
-        );
-        //@ts-ignore
-        updated[overContainer].push(active.id.toString());
-        return updated;
-      });
+      handleStageChange(active.id, over.id);
     }
   }
 
@@ -143,21 +131,11 @@ export default function LeadsPipeline() {
     console.log("drag over to:", to);
 
     if (!from || !to || from === to) return;
-
-    setLeads(prev => {
-      const updated = { ...prev };
-      //@ts-ignore
-      updated[from] = updated[from].filter(id => id !== activeId);
-      //@ts-ignore
-      updated[to] = [...updated[to], activeId];
-      return updated;
-    });
   }
 
   function findContainerWithLead(leadId: string): string | undefined {
     return Object.keys(leads).find(key =>
-      //@ts-ignore
-      leads[key as keyof typeof leads].includes(leadId)
+      leads[key].some(lead => lead.id === leadId)
     );
   }
 }
