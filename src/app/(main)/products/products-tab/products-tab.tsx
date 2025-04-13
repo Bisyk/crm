@@ -1,7 +1,6 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ProductCard } from "@/components/product-card";
 import { LayoutGrid, Table } from "lucide-react";
 import { trpc } from "@/trpc/client";
 import { DataTable } from "@/components/ui/data-table";

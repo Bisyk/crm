@@ -9,12 +9,11 @@ export const orderRouter = createTRPCRouter({
         orderDate: z.string(),
         customerId: z.string(),
         employeeId: z.string(),
-        totalAmount: z.number(),
         orderItems: z.array(
           z.object({
             quantity: z.number(),
             price: z.string(),
-            id: z.string(),
+            productId: z.string(),
           })
         ),
       })
@@ -35,13 +34,12 @@ export const orderRouter = createTRPCRouter({
         orderDate: z.string(),
         customerId: z.string(),
         employeeId: z.string(),
-        totalAmount: z.number(),
         orderId: z.string(),
         orderItems: z.array(
           z.object({
             quantity: z.number(),
             price: z.string(),
-            id: z.string(),
+            productId: z.string(),
           })
         ),
       })

@@ -14,7 +14,7 @@ export type Customer = {
 export const columns: ColumnDef<Customer>[] = [
   {
     accessorKey: "firstName",
-    header: "Firs Name",
+    header: "First Name",
   },
   {
     accessorKey: "lastName",

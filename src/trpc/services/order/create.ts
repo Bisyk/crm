@@ -1,21 +1,19 @@
 import { getUser } from "@/lib/dal";
 import prisma from "@/lib/prisma";
-import { CreateOrderItemInput } from "../orderItem";
 import * as orderItemService from "../orderItem";
+import { OrderItem } from "@/types/shared";
 
 interface CreateOrderInput {
   orderDate: string;
   customerId: string;
   employeeId: string;
-  totalAmount: number;
-  orderItems: CreateOrderItemInput[];
+  orderItems: OrderItem[];
 }
 
 export const create = async ({
   orderDate,
   customerId,
   employeeId,
-  totalAmount,
   orderItems,
 }: CreateOrderInput) => {
   const { shop } = await getUser();
@@ -28,7 +26,6 @@ export const create = async ({
         orderDate: isoTimeString,
         customerId,
         employeeId,
-        totalAmount,
         shopId: shop.id,
       },
     });

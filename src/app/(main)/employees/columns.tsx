@@ -18,7 +18,7 @@ export type Employee = {
 export const columns: ColumnDef<Employee>[] = [
   {
     accessorKey: "firstName",
-    header: "Firs Name",
+    header: "First Name",
   },
   {
     accessorKey: "lastName",

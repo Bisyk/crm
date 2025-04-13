@@ -61,7 +61,6 @@ export default function AddModal({ id, children }: AddModalProps) {
       utils.product.getAll.invalidate();
     },
     onError: error => {
-
       toast.error(
         "Ooooops! Something went wrong. Product not added. Please check your inputs and try again."
       );
@@ -89,7 +88,6 @@ export default function AddModal({ id, children }: AddModalProps) {
 
     useEffect(() => {
       if (data) {
-
         setName(data.name);
         setDescription(data.description);
         setPrice(Number(data.price));
@@ -149,8 +147,8 @@ export default function AddModal({ id, children }: AddModalProps) {
         <DialogHeader>
           <DialogTitle>Add Product</DialogTitle>
           <DialogDescription>
-            Fill in the details below to add a new product.
-            Ensure all fields are completed accurately.
+            Fill in the details below to add a new product. Ensure all fields
+            are completed accurately.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -221,6 +219,7 @@ export default function AddModal({ id, children }: AddModalProps) {
             type="text"
             required
             className="col-span-3"
+            min={1}
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">

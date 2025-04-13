@@ -14,6 +14,17 @@ export const getAll = async () => {
         employee: {
           select: { firstName: true, lastName: true },
         },
+        items: {
+          include: {
+            product: {
+              select: {
+                id: true,
+                name: true,
+                price: true,
+              },
+            },
+          },
+        },
       },
     });
     return orders;

@@ -1,27 +1,19 @@
 import prisma from "@/lib/prisma";
-import { CreateOrderItemInput } from "../orderItem";
 import * as orderItemService from "../orderItem";
-
-interface UpdateOrderItemInput {
-  quantity: number;
-  price: string;
-  id: string;
-}
+import { OrderItem } from "@/types/shared";
 
 interface UpdateOrderInput {
   orderDate: string;
   customerId: string;
   employeeId: string;
-  totalAmount: number;
   orderId: string;
-  orderItems: UpdateOrderItemInput[];
+  orderItems: OrderItem[];
 }
 
 export const update = async ({
   orderDate,
   customerId,
   employeeId,
-  totalAmount,
   orderItems,
   orderId,
 }: UpdateOrderInput) => {
@@ -36,7 +28,6 @@ export const update = async ({
         orderDate: isoTimeString,
         customerId,
         employeeId,
-        totalAmount,
       },
     });
 
@@ -44,11 +35,7 @@ export const update = async ({
 
     orderItemService.deleteAllByOrderId(orderId);
 
-    orderItems.forEach(async i => {
-      const createdOrderItem = orderItemService.create(
-        Object.assign(i, { orderId })
-      );
-    });
+    orderItemService.createMany(Object.assign(orderItems, { orderId }));
 
     return updatedOrder;
   } catch (error) {

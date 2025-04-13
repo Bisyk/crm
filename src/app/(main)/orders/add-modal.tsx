@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Trash2 } from "lucide-react";
+import ProductsList from "@/components/products-list";
+import { OrderItem } from "@/types/shared";
 
 interface AddModalProps {
   id?: string;
@@ -38,26 +40,18 @@ export default function AddModal({ id, children }: AddModalProps) {
   const [selectedProductId, setSelectedProductId] = useState<string | "">("");
   const [addedProducts, setAddedProducts] = useState<
     {
-      id: string;
+      productId: string;
       name: string;
       price: string;
       quantity: number;
     }[]
   >([]);
   const [quantity, setQuantity] = useState("1");
-  const [totalAmount, setTotalAmount] = useState(0);
-
-  useEffect(() => {
-    setTotalAmount(
-      addedProducts.reduce((acc, p) => acc + Number(p.price) * p.quantity, 0)
-    );
-  }, [addedProducts]);
-
-  const utils = trpc.useUtils();
-
   const { data: customers } = trpc.customer.getAll.useQuery();
   const { data: employees } = trpc.employee.getAll.useQuery();
   const { data: products } = trpc.product.getAll.useQuery();
+
+  const utils = trpc.useUtils();
 
   if (id) {
     const { data: order } = trpc.order.getById.useQuery(id);
@@ -112,16 +106,18 @@ export default function AddModal({ id, children }: AddModalProps) {
 
   const handleAddProduct = () => {
     if (selectedProductId && quantity) {
-      const product = products?.find(p => p.id === selectedProductId);
+      const product = products?.find(
+        (p: OrderItem) => p.productId === selectedProductId
+      );
 
       const isProductAlreadyAdded = addedProducts.some(
-        p => p.id === selectedProductId
+        p => p.productId === selectedProductId
       );
 
       if (isProductAlreadyAdded) {
         setAddedProducts(prev => {
           return prev.map(p =>
-            p.id === selectedProductId
+            p.productId === selectedProductId
               ? { ...p, quantity: p.quantity + Number(quantity) }
               : p
           );
@@ -137,7 +133,7 @@ export default function AddModal({ id, children }: AddModalProps) {
         setAddedProducts(prev => [
           ...prev,
           {
-            id: product.id,
+            productId: product.id,
             name: product.name,
             price: product.price,
             quantity: Number(quantity),
@@ -150,7 +146,7 @@ export default function AddModal({ id, children }: AddModalProps) {
   };
 
   const handleDeleteProduct = (id: string) => {
-    setAddedProducts(prev => prev.filter(p => p.id !== id));
+    setAddedProducts(prev => prev.filter(p => p.productId !== id));
   };
 
   const handleCreate = async (e: React.FormEvent) => {
@@ -160,7 +156,6 @@ export default function AddModal({ id, children }: AddModalProps) {
       orderDate,
       customerId,
       employeeId,
-      totalAmount,
       orderItems: addedProducts,
     });
   };
@@ -173,7 +168,6 @@ export default function AddModal({ id, children }: AddModalProps) {
         orderDate,
         customerId,
         employeeId,
-        totalAmount,
         orderItems: addedProducts,
         orderId: id,
       });
@@ -311,36 +305,16 @@ export default function AddModal({ id, children }: AddModalProps) {
                 placeholder="Quantity"
                 className="max-w-20 md:max-w-24 lg:max-w-28"
                 type="number"
+                min={1}
               />
               <Button onClick={handleAddProduct}>+</Button>
             </div>
           </div>
           {addedProducts.length > 0 && (
-            <Card className="p-4 mt-2">
-              {addedProducts.map(p => (
-                <div
-                  key={p.id}
-                  className="flex justify-between items-center bg-gray-50 p-2 rounded-md"
-                >
-                  <div>
-                    <div>{p.name}</div>
-                    <div className="text-sm text-gray-500">
-                      <span>${Number(p.price).toFixed(2)}</span> x{" "}
-                      <span>{p.quantity}</span> |{" "}
-                      {(Number(p.price) * p.quantity).toFixed(2)}
-                    </div>
-                  </div>
-                  <Button onClick={() => handleDeleteProduct(p.id)}>
-                    <Trash2 />
-                  </Button>
-                </div>
-              ))}
-              <div className="border"></div>
-              <div className="flex justify-between items-center mt-2 px-2">
-                <div>Total</div>
-                <div className="text-lg">$ {totalAmount}</div>
-              </div>
-            </Card>
+            <ProductsList
+              products={addedProducts}
+              handleDeleteProduct={handleDeleteProduct}
+            />
           )}
         </div>
         <DialogFooter>

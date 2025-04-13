@@ -11,6 +11,11 @@ export type Order = {
   totalAmount: string;
   employeeId: string;
   customerId: string;
+  items: {
+    id: string;
+    quantity: number;
+    price: string;
+  }[];
 };
 
 export const columns: ColumnDef<Order>[] = [
@@ -53,8 +58,21 @@ export const columns: ColumnDef<Order>[] = [
     },
   },
   {
-    accessorKey: "totalAmount",
+    accessorKey: "items",
     header: "Total Amount",
+    cell: ({ row }) => {
+      const items = row.getValue("items") as {
+        id: string;
+        quantity: number;
+        price: string;
+      }[];
+
+      const totalPrice = items.reduce((acc, item) => {
+        return acc + item.quantity * parseFloat(item.price);
+      }, 0);
+
+      return <span>{totalPrice}</span>;
+    },
   },
   {
     accessorKey: "id",

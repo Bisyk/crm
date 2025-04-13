@@ -84,31 +84,43 @@ model Customer {
 }
 
 model Lead {
-  id        String  @id @default(cuid())
-  firstName String
-  lastName  String
-  email     String? @unique
-  phone     String?
-  interest  String?
-  notes     String?
+  id         String  @id @default(cuid())
+  firstName  String
+  lastName   String
+  email      String? @unique
+  phone      String?
+  notes      String?
+  stage      String?
+  shopId     String
+  employeeId String
 
   // A lead belongs to a single shop (tenant)
-  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  shopId String
+  shop Shop @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  leadInterests LeadInterest[]
+}
+
+model LeadInterest {
+  id        String  @id @default(cuid())
+  leadId    String
+  productId String
+  quantity  Int
+  lead      Lead    @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model Product {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  price       Decimal
-  stockCount  Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  imageUrl    String?
-  brandId     String?
-  categoryId  String?
-  lowStockThreshold Int? @default(0)
+  id                String   @id @default(cuid())
+  name              String
+  description       String?
+  price             Decimal
+  stockCount        Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  imageUrl          String?
+  brandId           String?
+  categoryId        String?
+  lowStockThreshold Int?     @default(0)
 
   // Product belongs to a specific shop
   shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
@@ -119,13 +131,13 @@ model Product {
   category Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   // Relationship with orders
-  ordersItems OrderItem[]
+  ordersItems   OrderItem[]
+  leadInterests LeadInterest[]
 }
 
 model Order {
-  id          String   @id @default(cuid())
-  orderDate   DateTime @default(now())
-  totalAmount Decimal
+  id        String   @id @default(cuid())
+  orderDate DateTime @default(now())
 
   // Order is specific to a shop (tenant)
   shop   Shop   @relation(fields: [shopId], references: [id])

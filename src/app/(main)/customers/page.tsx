@@ -11,8 +11,11 @@ export default async function ClientsPage() {
   const data = await getData();
 
   return (
-    <div className="container mx-auto py-10">
-      <AddModal />
+    <div className="container mx-auto">
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold">Customers</h1>
+        <AddModal />
+      </div>
       <DataTable
         columns={columns}
         data={data}

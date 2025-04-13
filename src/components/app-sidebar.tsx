@@ -3,12 +3,11 @@
 import * as React from "react";
 import {
   CircleDollarSign,
-  Frame,
+  Factory,
   Headset,
   LayoutDashboard,
   PackageSearch,
   ShieldUser,
-  Store,
   Users,
 } from "lucide-react";
 
@@ -27,21 +26,6 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { trpc } from "@/trpc/client";
-import { userInfo } from "os";
-
-const itemsForAdmin = [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  { title: "Customers", url: "/customers", icon: Users },
-  { title: "Leads", url: "/leads", icon: Headset },
-  { title: "Orders", url: "/orders", icon: CircleDollarSign },
-  { title: "Products", url: "/products", icon: PackageSearch },
-  { title: "Employees", url: "/employees", icon: ShieldUser },
-];
 
 const itemsForEmployee = [
   {
@@ -51,9 +35,13 @@ const itemsForEmployee = [
   },
   { title: "Customers", url: "/customers", icon: Users },
   { title: "Leads", url: "/leads", icon: Headset },
+  { title: "Leads Pipeline", url: "leads-pipeline", icon: Factory },
   { title: "Orders", url: "/orders", icon: CircleDollarSign },
   { title: "Products", url: "/products", icon: PackageSearch },
 ];
+
+const itemsForAdmin = [...itemsForEmployee];
+itemsForAdmin.push({ title: "Employees", url: "/employees", icon: ShieldUser });
 
 export function AppSidebar({
   userInfo,

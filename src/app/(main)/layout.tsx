@@ -7,20 +7,17 @@ import {
 } from "@/components/ui/sidebar";
 import { getUser } from "@/lib/dal";
 import { TRPCProvider } from "@/trpc/client";
-import { trpc } from "@/trpc/server";
 import React from "react";
 
 export default async function MainLayout({
   children,
 }: React.PropsWithChildren<{}>) {
   const user = await getUser();
-  
+
   return (
     <TRPCProvider>
       <SidebarProvider>
-        <AppSidebar
-          userInfo={user}
-        />
+        <AppSidebar userInfo={user} />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
             <div className="flex items-center gap-2 px-4">
