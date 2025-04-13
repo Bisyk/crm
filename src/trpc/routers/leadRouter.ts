@@ -28,4 +28,9 @@ export const leadRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       const lead = await leadService.create(input);
     }),
+  updateStage: baseProcedure
+    .input(z.object({ id: z.string(), stage: z.string() }))
+    .mutation(async ({ input }) => {
+      leadService.update(input.id, input.stage);
+    }),
 });

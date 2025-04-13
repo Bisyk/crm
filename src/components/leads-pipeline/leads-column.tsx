@@ -33,10 +33,10 @@ export const Droppable = ({ id, title, leads }: LeadsColumn) => {
       >
         {leads.map(lead => (
           <Draggable
-            key={lead}
-            id={lead}
+            key={lead.id}
+            id={lead.id}
           >
-            {lead}
+            {lead.firstName} {lead.lastName}
           </Draggable>
         ))}
       </ul>
