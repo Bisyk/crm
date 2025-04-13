@@ -59,6 +59,7 @@ export default function AddModal() {
       setEmployeeId("");
       setSelectedProductId("");
       setQuantity("1");
+      setLeadInterestProducts([])
 
       toast.success("Lead added successfully");
       router.refresh();
