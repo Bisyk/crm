@@ -3,6 +3,7 @@
 import React from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { Draggable } from "./lead";
+import { Mail, Phone, PiggyBank } from "lucide-react";
 
 interface LeadsColumn {
   id: string;
@@ -36,7 +37,27 @@ export const Droppable = ({ id, title, leads }: LeadsColumn) => {
             key={lead.id}
             id={lead.id}
           >
-            {lead.firstName} {lead.lastName}
+            <div className="text-start">
+              <p className="font-bold mb-2 flex justify-between">
+                <span>
+                  {lead.firstName} {lead.lastName}
+                </span>
+                <span className="flex gap-2 text-green-800">
+                  <PiggyBank />
+                  {lead.leadInterests.reduce((acc, l) => {
+                    return acc + l.quantity * Number(l.product.price);
+                  }, 0)}
+                  $
+                </span>
+              </p>
+              <p className="flex gap-1 items-center text-gray-700">
+                <Mail className="w-4" /> {lead.email}
+              </p>
+              <p className="flex gap-1 items-center text-gray-700">
+                <Phone className="w-4" />
+                {lead.phone}
+              </p>
+            </div>
           </Draggable>
         ))}
       </ul>

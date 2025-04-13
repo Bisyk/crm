@@ -50,26 +50,20 @@ export default function LeadsPipeline() {
       };
 
       fetchedLeads.forEach((lead: Lead) => {
-        const newLead = {
-          id: lead.id,
-          firstName: lead.firstName,
-          lastName: lead.lastName,
-        };
-
         if (lead.stage === "New") {
-          updatedLeads.New.push(newLead);
+          updatedLeads.New.unshift(lead);
         }
 
         if (lead.stage === "Thinking") {
-          updatedLeads.Thinking.push(newLead);
+          updatedLeads.Thinking.unshift(lead);
         }
 
         if (lead.stage === "InProgress") {
-          updatedLeads.InProgress.push(newLead);
+          updatedLeads.InProgress.unshift(lead);
         }
 
         if (lead.stage === "Done") {
-          updatedLeads.Done.push(newLead);
+          updatedLeads.Done.unshift(lead);
         }
       });
 
