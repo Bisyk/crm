@@ -177,7 +177,7 @@ export default function AddModal({ id, children }: AddModalProps) {
   return (
     <Dialog>
       <Toaster richColors />
-      <div className="w-full flex justify-end mb-2">
+      <div className="w-full flex justify-start items center">
         <DialogTrigger asChild>
           <Button variant="outline">{children}</Button>
         </DialogTrigger>

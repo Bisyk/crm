@@ -12,7 +12,9 @@ export default function OrdersPage() {
     <div className="container mx-auto">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Orders</h1>
-        <AddModal>Add Order</AddModal>
+        <div>
+          <AddModal>Add Order</AddModal>
+        </div>
       </div>
       {data && !isLoading && (
         <DataTable

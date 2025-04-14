@@ -80,7 +80,7 @@ export const columns: ColumnDef<Order>[] = [
     cell: ({ row }) => {
       const id = row.getValue("id") as string;
       return (
-        <div className="flex">
+        <div>
           <AddModal id={id}>
             <Pencil />
           </AddModal>
