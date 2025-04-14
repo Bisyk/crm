@@ -4,6 +4,8 @@ export interface Product {
   description: string;
   price: number;
   quantity: number;
+  stockCount: number;
+  lowStockThreshold: number;
   imageUrl: string;
 }
 export interface OrderItem {

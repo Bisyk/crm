@@ -83,22 +83,22 @@ export default function AddModal({ id, children }: AddModalProps) {
   const { data: categories } = trpc.category.getAll.useQuery();
   const { data: brands } = trpc.brand.getAll.useQuery();
 
-  if (id) {
-    const { data } = trpc.product.getById.useQuery(id);
+  const { data } = trpc.product.getById.useQuery(id!, {
+    enabled: !!id,
+  });
 
-    useEffect(() => {
-      if (data) {
-        setName(data.name);
-        setDescription(data.description);
-        setPrice(Number(data.price));
-        setQuantity(Number(data.stockCount));
-        setCategoryId(data.categoryId);
-        setBrandId(data.brandId);
-        setImageUrl(data.image);
-        setLowStockThreshold(Number(data.lowStockThreshold));
-      }
-    }, [data]);
-  }
+  useEffect(() => {
+    if (data) {
+      setName(data.name);
+      setDescription(data.description);
+      setPrice(Number(data.price));
+      setQuantity(Number(data.stockCount));
+      setCategoryId(data.categoryId);
+      setBrandId(data.brandId);
+      setImageUrl(data.image);
+      setLowStockThreshold(Number(data.lowStockThreshold));
+    }
+  }, [data]);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -145,7 +145,7 @@ export default function AddModal({ id, children }: AddModalProps) {
       </div>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Product</DialogTitle>
+          <DialogTitle>{id ? "Edit Product" : "Add Product"}</DialogTitle>
           <DialogDescription>
             Fill in the details below to add a new product. Ensure all fields
             are completed accurately.

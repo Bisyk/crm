@@ -53,23 +53,25 @@ export default function AddModal({ id, children }: AddModalProps) {
 
   const utils = trpc.useUtils();
 
-  if (id) {
-    const { data: order } = trpc.order.getById.useQuery(id);
+  const { data: order } = trpc.order.getById.useQuery(id!, {
+    enabled: !!id,
+  });
 
-    const { data: orderItems } = trpc.orderItem.getAllByOrderId.useQuery(id);
+  const { data: orderItems } = trpc.orderItem.getAllByOrderId.useQuery(id!, {
+    enabled: !!id,
+  });
 
-    useEffect(() => {
-      if (order && orderItems) {
-        const dateObj = new Date(order.orderDate);
-        const formattedDate = dateObj.toISOString().split("T")[0];
+  useEffect(() => {
+    if (order && orderItems) {
+      const dateObj = new Date(order.orderDate);
+      const formattedDate = dateObj.toISOString().split("T")[0];
 
-        setOrderDate(formattedDate);
-        setCustomerId(order.customerId);
-        setEmployeeId(order.employeeId);
-        setAddedProducts(orderItems);
-      }
-    }, [order]);
-  }
+      setOrderDate(formattedDate);
+      setCustomerId(order.customerId);
+      setEmployeeId(order.employeeId);
+      setAddedProducts(orderItems);
+    }
+  }, [order]);
 
   const mutation = trpc.order.create.useMutation({
     onSuccess: () => {
@@ -107,7 +109,7 @@ export default function AddModal({ id, children }: AddModalProps) {
   const handleAddProduct = () => {
     if (selectedProductId && quantity) {
       const product = products?.find(
-        (p: OrderItem) => p.productId === selectedProductId
+        (p: OrderItem) => p.id === selectedProductId
       );
 
       const isProductAlreadyAdded = addedProducts.some(

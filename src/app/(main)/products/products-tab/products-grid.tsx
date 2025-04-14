@@ -1,9 +1,7 @@
 import { ProductCard } from "@/components/product-card";
-import { trpc } from "@/trpc/client";
+import { Product } from "@/types/shared";
 
-export default function ProductsGrid() {
-  const { data: products } = trpc.product.getAll.useQuery();
-
+export default function ProductsGrid({ products }: { products: Product[] }) {
   return (
     <div className="flex flex-wrap gap-4 justify-center md:justify-center lg:justify-between items-center mb-4">
       {products &&

@@ -32,7 +32,7 @@ export default function ProductsTab() {
           value="grid"
           className="w-full"
         >
-          <ProductsGrid />
+          <ProductsGrid products={data} />
         </TabsContent>
         <TabsContent
           className="w-full"
