@@ -50,20 +50,8 @@ export default function LeadsPipeline() {
       };
 
       fetchedLeads.forEach((lead: Lead) => {
-        if (lead.stage === "New") {
-          updatedLeads.New.unshift(lead);
-        }
-
-        if (lead.stage === "Thinking") {
-          updatedLeads.Thinking.unshift(lead);
-        }
-
-        if (lead.stage === "InProgress") {
-          updatedLeads.InProgress.unshift(lead);
-        }
-
-        if (lead.stage === "Done") {
-          updatedLeads.Done.unshift(lead);
+        if (lead.stage && leads[lead.stage]) {
+          updatedLeads[lead.stage].unshift(lead);
         }
       });
 
@@ -95,11 +83,7 @@ export default function LeadsPipeline() {
   );
 
   function handleDragEnd(e: DragEndEvent) {
-    console.log("drag end");
     const { active, over } = e;
-
-    console.log("drag end active: ", active);
-    console.log("drag end over: ", over);
 
     if (!over || active.id === over.id) return;
 
@@ -107,28 +91,19 @@ export default function LeadsPipeline() {
     const overContainer =
       findContainerWithLead(over.id.toString()) || over.id.toString();
 
-    console.log("drag end activeContainer: ", activeContainer);
-    console.log("drag end overContainer: ", overContainer);
-
     if (!activeContainer || !overContainer) return;
 
     if (activeContainer !== overContainer) {
-      handleStageChange(active.id, over.id);
+      handleStageChange(active.id.toString(), overContainer);
     }
   }
 
   function dragOverHandler(e: DragOverEvent) {
-    console.log("drag over");
     const activeId = e.active.id.toString();
     const overId = e.over?.id.toString();
 
     const from = findContainerWithLead(activeId);
     const to = findContainerWithLead(overId ?? "") || overId;
-
-    console.log("drag over activeId: ", activeId);
-    console.log("drag over overId: ", overId);
-    console.log("drag over from: ", from);
-    console.log("drag over to:", to);
 
     if (!from || !to || from === to) return;
   }
