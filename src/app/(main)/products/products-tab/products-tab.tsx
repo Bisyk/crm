@@ -44,6 +44,7 @@ export default function ProductsTab() {
             <DataTable
               data={data}
               columns={columns}
+              fieldToSortBy="name"
             />
           )}
           {isLoading && <Loader />}

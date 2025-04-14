@@ -18,6 +18,7 @@ export default function CustomersPage() {
         <DataTable
           columns={columns}
           data={data}
+          fieldToSortBy="email"
         />
       )}
       {isLoading && <Loader />}

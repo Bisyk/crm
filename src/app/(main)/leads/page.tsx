@@ -19,6 +19,7 @@ export default function LeadsPage() {
         <DataTable
           data={data}
           columns={columns}
+          fieldToSortBy="email"
         />
       )}
       {isLoading && <Loader />}

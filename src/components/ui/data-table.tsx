@@ -25,12 +25,14 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   isFilterable?: boolean;
+  fieldToSortBy?: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   isFilterable = true,
+  fieldToSortBy,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -49,13 +51,15 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="rounded-md border">
-      {isFilterable && (
+      {isFilterable && fieldToSortBy && (
         <div className="flex items-center py-4 pl-1">
           <Input
-            placeholder="Filter emails..."
-            value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+            placeholder={`Filter by ${fieldToSortBy}`}
+            value={
+              (table.getColumn(fieldToSortBy)?.getFilterValue() as string) ?? ""
+            }
             onChange={event =>
-              table.getColumn("email")?.setFilterValue(event.target.value)
+              table.getColumn(fieldToSortBy)?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
