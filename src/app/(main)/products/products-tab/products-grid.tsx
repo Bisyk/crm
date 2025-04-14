@@ -3,7 +3,7 @@ import { Product } from "@/types/shared";
 
 export default function ProductsGrid({ products }: { products: Product[] }) {
   return (
-    <div className="flex flex-wrap gap-4 justify-center md:justify-center lg:justify-between items-center mb-4">
+    <div className="flex flex-wrap gap-1 justify-center md:justify-center lg:justify-start items-center mb-4">
       {products &&
         products.map(p => (
           <ProductCard

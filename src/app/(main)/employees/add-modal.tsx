@@ -16,36 +16,32 @@ import { Toaster, toast } from "sonner";
 
 import { useState } from "react";
 import { trpc } from "@/trpc/client";
-import { useRouter } from "next/navigation";
+import { useForm } from "@/hooks/use-form";
+
+const INITIAL_FORM_VALUE = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  position: "",
+  role: "",
+  salary: 0,
+  hireDate: "",
+  password: "",
+};
 
 export default function AddModal() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [position, setPosition] = useState("");
-  const [role, setRole] = useState("");
-  const [salary, setSalary] = useState<number | "">("");
-  const [hireDate, setHireDate] = useState("");
-  const [password, setPassword] = useState("");
+  const { form, resetForm, updateFormField } = useForm(INITIAL_FORM_VALUE);
 
-  const router = useRouter();
+  const utils = trpc.useUtils();
 
   const mutation = trpc.employee.create.useMutation({
     onSuccess: () => {
-      setFirstName("");
-      setLastName("");
-      setEmail("");
-      setPhone("");
-      setPosition("");
-      setRole("");
-      setSalary("");
-      setHireDate("");
-      setPassword("");
+      resetForm();
 
       toast.success("Employee added successfully");
 
-      router.refresh();
+      utils.employee.getAll.invalidate();
     },
     onError: () => {
       toast.error(
@@ -57,17 +53,7 @@ export default function AddModal() {
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    mutation.mutate({
-      firstName,
-      lastName,
-      email,
-      phone,
-      position,
-      role,
-      salary: salary === "" ? 0 : salary,
-      hireDate,
-      password,
-    });
+    mutation.mutate(form);
   };
 
   return (
@@ -82,8 +68,8 @@ export default function AddModal() {
         <DialogHeader>
           <DialogTitle>Add Employee</DialogTitle>
           <DialogDescription>
-            Fill in the details below to add a new employee.
-            Ensure all fields are completed accurately.
+            Fill in the details below to add a new employee. Ensure all fields
+            are completed accurately.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -95,8 +81,8 @@ export default function AddModal() {
               First Name
             </Label>
             <Input
-              value={firstName}
-              onChange={e => setFirstName(e.target.value)}
+              value={form.firstName}
+              onChange={e => updateFormField("firstName", e.target.value)}
               id="first-name"
               placeholder="John"
               className="col-span-3"
@@ -110,8 +96,8 @@ export default function AddModal() {
               Last Name
             </Label>
             <Input
-              value={lastName}
-              onChange={e => setLastName(e.target.value)}
+              value={form.lastName}
+              onChange={e => updateFormField("lastName", e.target.value)}
               id="last-name"
               placeholder="Doe"
               className="col-span-3"
@@ -125,8 +111,8 @@ export default function AddModal() {
               Email
             </Label>
             <Input
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              value={form.email}
+              onChange={e => updateFormField("email", e.target.value)}
               id="email"
               placeholder="example@example.com"
               className="col-span-3"
@@ -140,8 +126,8 @@ export default function AddModal() {
               Password
             </Label>
             <Input
-              value={password}
-              onChange={e => setPassword(e.target.value)}
+              value={form.password}
+              onChange={e => updateFormField("password", e.target.value)}
               id="password"
               placeholder="*********"
               className="col-span-3"
@@ -155,8 +141,8 @@ export default function AddModal() {
               Phone
             </Label>
             <Input
-              value={phone}
-              onChange={e => setPhone(e.target.value)}
+              value={form.phone}
+              onChange={e => updateFormField("phone", e.target.value)}
               id="phone"
               placeholder="+1234567890"
               className="col-span-3"
@@ -170,10 +156,10 @@ export default function AddModal() {
               Position
             </Label>
             <Input
-              value={position}
-              onChange={e => setPosition(e.target.value)}
+              value={form.position}
+              onChange={e => updateFormField("position", e.target.value)}
               id="position"
-              placeholder="Software Engineer"
+              placeholder="Sales Manager"
               className="col-span-3"
             />
           </div>
@@ -185,10 +171,10 @@ export default function AddModal() {
               Role
             </Label>
             <Input
-              value={role}
-              onChange={e => setRole(e.target.value)}
+              value={form.role}
+              onChange={e => updateFormField("role", e.target.value)}
               id="role"
-              placeholder="Developer"
+              placeholder="Employee"
               className="col-span-3"
             />
           </div>
@@ -200,11 +186,11 @@ export default function AddModal() {
               Salary
             </Label>
             <Input
-              value={salary}
-              onChange={e => setSalary(Number(e.target.value) || "")}
+              value={form.salary}
+              onChange={e => updateFormField("salary", Number(e.target.value))}
               id="salary"
               placeholder="50000"
-              type="number"
+              type="text"
               className="col-span-3"
             />
           </div>
@@ -216,8 +202,8 @@ export default function AddModal() {
               Hire Date
             </Label>
             <Input
-              value={hireDate}
-              onChange={e => setHireDate(e.target.value)}
+              value={form.hireDate}
+              onChange={e => updateFormField("hireDate", e.target.value)}
               id="hire-date"
               placeholder="YYYY-MM-DD"
               type="date"

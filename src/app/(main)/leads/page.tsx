@@ -1,16 +1,13 @@
-import { trpc } from "@/trpc/server";
+"use client";
+
 import { columns, Lead } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
 import AddModal from "./add-modal";
+import { trpc } from "@/trpc/client";
+import Loader from "@/components/loader";
 
-async function getData(): Promise<Lead[]> {
-  return trpc.lead.getAll();
-}
-
-export default async function LeadsPage() {
-  const data = await getData();
-
-  console.log(data);
+export default function LeadsPage() {
+  const { data, isLoading } = trpc.lead.getAll.useQuery();
 
   return (
     <div className="container mx-auto">
@@ -18,10 +15,13 @@ export default async function LeadsPage() {
         <h1 className="text-2xl font-bold">Leads</h1>
         <AddModal />
       </div>
-      <DataTable
-        data={data}
-        columns={columns}
-      />
+      {data && (
+        <DataTable
+          data={data}
+          columns={columns}
+        />
+      )}
+      {isLoading && <Loader />}
     </div>
   );
 }

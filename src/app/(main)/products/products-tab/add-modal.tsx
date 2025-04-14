@@ -25,36 +25,32 @@ import { Toaster, toast } from "sonner";
 
 import { useEffect, useState } from "react";
 import { trpc } from "@/trpc/client";
+import { useForm } from "@/hooks/use-form";
 
 interface AddModalProps {
   id?: string;
   children?: React.ReactNode;
 }
 
+const INITIAL_FORM_VALUE = {
+  name: "",
+  description: "",
+  price: 0,
+  quantity: 0,
+  categoryId: "",
+  brandId: "",
+  imageUrl: "",
+  lowStockThreshold: 1,
+};
+
 export default function AddModal({ id, children }: AddModalProps) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState(1);
-  const [quantity, setQuantity] = useState(1);
-  const [categoryId, setCategoryId] = useState<string | "">("");
-  const [brandId, setBrandId] = useState<string | "">("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [lowStockThreshold, setLowStockThreshold] = useState(5);
+  const { form, resetForm, updateFormField } = useForm(INITIAL_FORM_VALUE);
 
   const utils = trpc.useUtils();
 
   const mutation = trpc.product.create.useMutation({
     onSuccess: () => {
-      setName("");
-      setDescription("");
-      setPrice(0);
-      setQuantity(0);
-      setCategoryId("");
-      setBrandId("");
-      setImageUrl("");
-      setLowStockThreshold(0);
-      setCategoryId("");
-      setBrandId("");
+      resetForm();
 
       toast.success("Product added successfully");
 
@@ -89,30 +85,21 @@ export default function AddModal({ id, children }: AddModalProps) {
 
   useEffect(() => {
     if (data) {
-      setName(data.name);
-      setDescription(data.description);
-      setPrice(Number(data.price));
-      setQuantity(Number(data.stockCount));
-      setCategoryId(data.categoryId);
-      setBrandId(data.brandId);
-      setImageUrl(data.image);
-      setLowStockThreshold(Number(data.lowStockThreshold));
+      updateFormField("name", data.name);
+      updateFormField("description", data.description);
+      updateFormField("price", Number(data.price));
+      updateFormField("quantity", Number(data.stockCount));
+      updateFormField("categoryId", data.categoryId);
+      updateFormField("brandId", data.brandId);
+      updateFormField("imageUrl", data.image);
+      updateFormField("lowStockThreshold", Number(data.lowStockThreshold));
     }
   }, [data]);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    mutation.mutate({
-      name,
-      description,
-      price,
-      stockCount: quantity,
-      lowStockThreshold,
-      categoryId,
-      brandId,
-      imageUrl,
-    });
+    mutation.mutate({ ...form, stockCount: form.quantity });
   };
 
   const handleUpdate = async (e: React.FormEvent) => {
@@ -120,19 +107,7 @@ export default function AddModal({ id, children }: AddModalProps) {
 
     if (!id) return;
 
-    updateMutation.mutate({
-      id,
-      data: {
-        name,
-        description,
-        price,
-        stockCount: quantity,
-        lowStockThreshold,
-        categoryId,
-        brandId,
-        imageUrl,
-      },
-    });
+    updateMutation.mutate({ id, data: { ...form, stockCount: form.quantity } });
   };
 
   return (
@@ -160,8 +135,8 @@ export default function AddModal({ id, children }: AddModalProps) {
               Name
             </Label>
             <Input
-              value={name}
-              onChange={e => setName(e.target.value)}
+              value={form.name}
+              onChange={e => updateFormField("name", e.target.value)}
               id="product-name"
               placeholder="MacBook Pro"
               type="text"
@@ -178,8 +153,8 @@ export default function AddModal({ id, children }: AddModalProps) {
             Description
           </Label>
           <Input
-            value={description}
-            onChange={e => setDescription(e.target.value)}
+            value={form.description}
+            onChange={e => updateFormField("description", e.target.value)}
             id="product-description"
             placeholder="A high-performance laptop"
             type="text"
@@ -195,8 +170,8 @@ export default function AddModal({ id, children }: AddModalProps) {
             Price
           </Label>
           <Input
-            value={price}
-            onChange={e => setPrice(Number(e.target.value))}
+            value={form.price}
+            onChange={e => updateFormField("price", Number(e.target.value))}
             id="product-price"
             placeholder="1999.99"
             type="text"
@@ -212,8 +187,8 @@ export default function AddModal({ id, children }: AddModalProps) {
             Quantity
           </Label>
           <Input
-            value={quantity}
-            onChange={e => setQuantity(Number(e.target.value))}
+            value={form.quantity}
+            onChange={e => updateFormField("quantity", Number(e.target.value))}
             id="product-quantity"
             placeholder="10"
             type="text"
@@ -230,20 +205,20 @@ export default function AddModal({ id, children }: AddModalProps) {
             Category
           </Label>
           <Select
-            onValueChange={value => setCategoryId(value)}
-            value={categoryId}
+            onValueChange={value => updateFormField("categoryId", value)}
+            value={form.categoryId}
           >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select Category" />
             </SelectTrigger>
             <SelectContent>
               {categories?.map((category: { id: string; name: string }) => (
-                <SelectItem
-                  key={category.id}
-                  value={category.id}
-                >
-                  {category.name}
-                </SelectItem>
+          <SelectItem
+            key={category.id}
+            value={category.id}
+          >
+            {category.name}
+          </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -256,20 +231,20 @@ export default function AddModal({ id, children }: AddModalProps) {
             Brand
           </Label>
           <Select
-            onValueChange={value => setBrandId(value)}
-            value={brandId}
+            onValueChange={value => updateFormField("brandId", value)}
+            value={form.brandId}
           >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select Brand" />
             </SelectTrigger>
             <SelectContent>
               {brands?.map((brand: { id: string; name: string }) => (
-                <SelectItem
-                  key={brand.id}
-                  value={brand.id}
-                >
-                  {brand.name}
-                </SelectItem>
+          <SelectItem
+            key={brand.id}
+            value={brand.id}
+          >
+            {brand.name}
+          </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -282,8 +257,8 @@ export default function AddModal({ id, children }: AddModalProps) {
             Image URL
           </Label>
           <Input
-            value={imageUrl}
-            onChange={e => setImageUrl(e.target.value)}
+            value={form.imageUrl}
+            onChange={e => updateFormField("imageUrl", e.target.value)}
             id="product-image"
             placeholder="https://example.com/image.jpg"
             type="text"
@@ -299,8 +274,8 @@ export default function AddModal({ id, children }: AddModalProps) {
             Low Stock Threshold
           </Label>
           <Input
-            value={lowStockThreshold}
-            onChange={e => setLowStockThreshold(Number(e.target.value))}
+            value={form.lowStockThreshold}
+            onChange={e => updateFormField("lowStockThreshold", Number(e.target.value))}
             id="product-low-stock"
             placeholder="5"
             type="text"

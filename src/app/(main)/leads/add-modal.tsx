@@ -13,10 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Toaster, toast } from "sonner";
-
-import { useState } from "react";
 import { trpc } from "@/trpc/client";
-import { useRouter } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -27,42 +24,41 @@ import {
 } from "@/components/ui/select";
 import ProductsList from "@/components/products-list";
 import { OrderItem } from "@/types/shared";
+import { useForm } from "@/hooks/use-form";
+import { useState } from "react";
 
 const stages = ["New", "Thinking", "In Progress", "Closed", "Lost"];
 
+const INITIAL_FORM_VALUE = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  notes: "",
+  stage: "New",
+  employeeId: "",
+};
+
 export default function AddModal() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [notes, setNotes] = useState("");
-  const [stage, setStage] = useState("New");
-  const [employeeId, setEmployeeId] = useState("");
-  const [selectedProductId, setSelectedProductId] = useState("");
-  const [quantity, setQuantity] = useState("1");
+  const { form, resetForm, updateFormField } = useForm(INITIAL_FORM_VALUE);
   const [leadInterestProducts, setLeadInterestProducts] = useState<OrderItem[]>(
     []
   );
+  const [selectedProductId, setSelectedProductId] = useState("");
+  const [quantity, setQuantity] = useState(1);
   const { data: employees } = trpc.employee.getAll.useQuery();
   const { data: products } = trpc.product.getAll.useQuery();
 
-  const router = useRouter();
+  const utils = trpc.useUtils();
 
   const mutation = trpc.lead.create.useMutation({
     onSuccess: () => {
-      setFirstName("");
-      setLastName("");
-      setEmail("");
-      setPhone("");
-      setNotes("");
-      setStage("New");
-      setEmployeeId("");
-      setSelectedProductId("");
-      setQuantity("1");
-      setLeadInterestProducts([])
+      resetForm();
+      setLeadInterestProducts([]);
 
       toast.success("Lead added successfully");
-      router.refresh();
+
+      utils.lead.getAll.invalidate();
     },
     onError: () => {
       toast.error(
@@ -75,19 +71,13 @@ export default function AddModal() {
     e.preventDefault();
 
     mutation.mutate({
-      firstName,
-      lastName,
-      email,
-      phone,
-      notes,
-      stage,
-      employeeId,
+      ...form,
       interests: leadInterestProducts,
     });
   };
 
   const handleAddProduct = () => {
-    if (!selectedProductId || quantity === "") {
+    if (!selectedProductId) {
       toast.error("Please select a product and enter a quantity.");
       return;
     }
@@ -120,7 +110,7 @@ export default function AddModal() {
       });
 
       setSelectedProductId("");
-      setQuantity("1");
+      setQuantity(1);
       return;
     }
 
@@ -133,7 +123,7 @@ export default function AddModal() {
 
     setLeadInterestProducts([...leadInterestProducts, newProduct]);
     setSelectedProductId("");
-    setQuantity("");
+    setQuantity(1);
   };
 
   const handleDeleteProduct = (productId: string) => {
@@ -169,8 +159,8 @@ export default function AddModal() {
               First Name
             </Label>
             <Input
-              value={firstName}
-              onChange={e => setFirstName(e.target.value)}
+              value={form.firstName}
+              onChange={e => updateFormField("firstName", e.target.value)}
               id="first-name"
               placeholder="Yaroslav"
               className="col-span-3"
@@ -184,8 +174,8 @@ export default function AddModal() {
               Last Name
             </Label>
             <Input
-              value={lastName}
-              onChange={e => setLastName(e.target.value)}
+              value={form.lastName}
+              onChange={e => updateFormField("lastName", e.target.value)}
               id="last-name"
               placeholder="Bisyk"
               className="col-span-3"
@@ -199,8 +189,8 @@ export default function AddModal() {
               Email
             </Label>
             <Input
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              value={form.email}
+              onChange={e => updateFormField("email", e.target.value)}
               id="email"
               placeholder="example@example.com"
               className="col-span-3"
@@ -214,8 +204,8 @@ export default function AddModal() {
               Phone
             </Label>
             <Input
-              value={phone}
-              onChange={e => setPhone(e.target.value)}
+              value={form.phone}
+              onChange={e => updateFormField("phone", e.target.value)}
               id="phone"
               placeholder="+1234567890"
               className="col-span-3"
@@ -229,8 +219,8 @@ export default function AddModal() {
               Stage
             </Label>
             <Select
-              onValueChange={value => setStage(value)}
-              value={stage}
+              onValueChange={value => updateFormField("stage", value)}
+              value={form.stage}
             >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select Stage" />
@@ -255,8 +245,8 @@ export default function AddModal() {
               Employee
             </Label>
             <Select
-              onValueChange={value => setEmployeeId(value)}
-              value={employeeId}
+              onValueChange={value => updateFormField("employeeId", value)}
+              value={form.employeeId}
             >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select Employee" />
@@ -283,8 +273,8 @@ export default function AddModal() {
               Notes
             </Label>
             <Textarea
-              value={notes}
-              onChange={e => setNotes(e.target.value)}
+              value={form.notes}
+              onChange={e => updateFormField("notes", e.target.value)}
               id="notes"
               placeholder="Additional info about lead..."
               className="col-span-3 max-h-[200px]"
@@ -326,12 +316,12 @@ export default function AddModal() {
                 </SelectContent>
               </Select>
               <Input
-                onChange={e => setQuantity(e.target.value)}
+                onChange={e => setQuantity(Number(e.target.value))}
                 value={quantity}
                 id="product-quantity"
                 placeholder="Quantity"
                 className="max-w-20 md:max-w-24 lg:max-w-28"
-                type="number"
+                type="text"
                 min={1}
               />
               <Button onClick={handleAddProduct}>+</Button>

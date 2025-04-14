@@ -7,6 +7,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { columns } from "./columns";
 import AddModal from "./add-modal";
 import ProductsGrid from "./products-grid";
+import Loader from "@/components/loader";
 
 export default function ProductsTab() {
   const { data, error, isLoading } = trpc.product.getAll.useQuery();
@@ -32,7 +33,8 @@ export default function ProductsTab() {
           value="grid"
           className="w-full"
         >
-          <ProductsGrid products={data} />
+          {data && !error && <ProductsGrid products={data} />}
+          {isLoading && <Loader />}
         </TabsContent>
         <TabsContent
           className="w-full"
@@ -44,6 +46,7 @@ export default function ProductsTab() {
               columns={columns}
             />
           )}
+          {isLoading && <Loader />}
         </TabsContent>
       </Tabs>
     </div>

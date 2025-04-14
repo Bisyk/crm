@@ -13,7 +13,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Toaster, toast } from "sonner";
-
 import { useEffect, useState } from "react";
 import { trpc } from "@/trpc/client";
 import {
@@ -23,20 +22,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card } from "@/components/ui/card";
-import { Trash2 } from "lucide-react";
 import ProductsList from "@/components/products-list";
 import { OrderItem } from "@/types/shared";
+import { useForm } from "@/hooks/use-form";
 
 interface AddModalProps {
   id?: string;
   children: React.ReactNode;
 }
 
+const INITIAL_FORM_VALUE = {
+  orderDate: "",
+  customerId: "",
+  employeeId: "",
+};
+
 export default function AddModal({ id, children }: AddModalProps) {
-  const [orderDate, setOrderDate] = useState("");
-  const [customerId, setCustomerId] = useState<string | "">("");
-  const [employeeId, setEmployeeId] = useState<string | "">("");
+  const { form, resetForm, updateFormField } = useForm(INITIAL_FORM_VALUE);
   const [selectedProductId, setSelectedProductId] = useState<string | "">("");
   const [addedProducts, setAddedProducts] = useState<
     {
@@ -46,7 +48,7 @@ export default function AddModal({ id, children }: AddModalProps) {
       quantity: number;
     }[]
   >([]);
-  const [quantity, setQuantity] = useState("1");
+  const [quantity, setQuantity] = useState(1);
   const { data: customers } = trpc.customer.getAll.useQuery();
   const { data: employees } = trpc.employee.getAll.useQuery();
   const { data: products } = trpc.product.getAll.useQuery();
@@ -66,18 +68,17 @@ export default function AddModal({ id, children }: AddModalProps) {
       const dateObj = new Date(order.orderDate);
       const formattedDate = dateObj.toISOString().split("T")[0];
 
-      setOrderDate(formattedDate);
-      setCustomerId(order.customerId);
-      setEmployeeId(order.employeeId);
+      updateFormField("orderDate", formattedDate);
+      updateFormField("customerId", order.customerId);
+      updateFormField("employeeId", order.employeeId);
+
       setAddedProducts(orderItems);
     }
   }, [order]);
 
   const mutation = trpc.order.create.useMutation({
     onSuccess: () => {
-      setOrderDate("");
-      setCustomerId("");
-      setEmployeeId("");
+      resetForm();
       setAddedProducts([]);
 
       toast.success("Product added successfully");
@@ -126,7 +127,7 @@ export default function AddModal({ id, children }: AddModalProps) {
         });
 
         setSelectedProductId("");
-        setQuantity("1");
+        setQuantity(1);
 
         return;
       }
@@ -142,7 +143,7 @@ export default function AddModal({ id, children }: AddModalProps) {
           },
         ]);
         setSelectedProductId("");
-        setQuantity("1");
+        setQuantity(1);
       }
     }
   };
@@ -155,9 +156,7 @@ export default function AddModal({ id, children }: AddModalProps) {
     e.preventDefault();
 
     mutation.mutate({
-      orderDate,
-      customerId,
-      employeeId,
+      ...form,
       orderItems: addedProducts,
     });
   };
@@ -167,9 +166,7 @@ export default function AddModal({ id, children }: AddModalProps) {
 
     if (id) {
       updateMutation.mutate({
-        orderDate,
-        customerId,
-        employeeId,
+        ...form,
         orderItems: addedProducts,
         orderId: id,
       });
@@ -201,8 +198,8 @@ export default function AddModal({ id, children }: AddModalProps) {
               Order Date
             </Label>
             <Input
-              value={orderDate}
-              onChange={e => setOrderDate(e.target.value)}
+              value={form.orderDate}
+              onChange={e => updateFormField("orderDate", e.target.value)}
               id="order-date"
               placeholder="YYYY-MM-DD"
               type="date"
@@ -217,8 +214,8 @@ export default function AddModal({ id, children }: AddModalProps) {
               Customer
             </Label>
             <Select
-              onValueChange={value => setCustomerId(value)}
-              value={customerId}
+              onValueChange={value => updateFormField("customerId", value)}
+              value={form.customerId}
             >
               <SelectTrigger className="w-[180px] md:w-[410px] lg:w-[555px]">
                 <SelectValue placeholder="Select Customer" />
@@ -245,8 +242,8 @@ export default function AddModal({ id, children }: AddModalProps) {
               Employee
             </Label>
             <Select
-              onValueChange={value => setEmployeeId(value)}
-              value={employeeId}
+              onValueChange={value => updateFormField("employeeId", value)}
+              value={form.employeeId}
             >
               <SelectTrigger className="w-[180px] md:w-[410px] lg:w-[555px]">
                 <SelectValue placeholder="Select Employee" />
@@ -301,12 +298,12 @@ export default function AddModal({ id, children }: AddModalProps) {
                 </SelectContent>
               </Select>
               <Input
-                onChange={e => setQuantity(e.target.value)}
+                onChange={e => setQuantity(Number(e.target.value))}
                 value={quantity}
                 id="product-quantity"
                 placeholder="Quantity"
                 className="max-w-20 md:max-w-24 lg:max-w-28"
-                type="number"
+                type="text"
                 min={1}
               />
               <Button onClick={handleAddProduct}>+</Button>

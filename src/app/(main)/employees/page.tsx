@@ -1,14 +1,13 @@
-import { trpc } from "@/trpc/server";
-import { columns, Employee } from "./columns";
+"use client";
+
+import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
 import AddModal from "./add-modal";
+import { trpc } from "@/trpc/client";
+import Loader from "@/components/loader";
 
-async function getData(): Promise<Employee[]> {
-  return trpc.employee.getAll();
-}
-
-export default async function EmployeesPage() {
-  const data = await getData();
+export default function EmployeesPage() {
+  const { data, isLoading } = trpc.employee.getAll.useQuery();
 
   return (
     <div className="container mx-auto">
@@ -16,10 +15,13 @@ export default async function EmployeesPage() {
         <h1 className="text-2xl font-bold">Employees</h1>
         <AddModal />
       </div>
-      <DataTable
-        columns={columns}
-        data={data}
-      />
+      {data && (
+        <DataTable
+          columns={columns}
+          data={data}
+        />
+      )}
+      {isLoading && <Loader />}
     </div>
   );
 }

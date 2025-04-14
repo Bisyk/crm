@@ -13,31 +13,29 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Toaster, toast } from "sonner";
-
-import { useState } from "react";
 import { trpc } from "@/trpc/client";
-import { useRouter } from "next/navigation";
+import { useForm } from "@/hooks/use-form";
+
+const INITIAL_FORM_VALUE = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  address: "",
+};
 
 export default function AddModal() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
+  const { form, resetForm, updateFormField } = useForm(INITIAL_FORM_VALUE);
 
-  const router = useRouter();
+  const utils = trpc.useUtils();
 
   const mutation = trpc.customer.create.useMutation({
     onSuccess: () => {
-      setFirstName("");
-      setLastName("");
-      setEmail("");
-      setPhone("");
-      setAddress("");
-      
+      resetForm();
+
       toast.success("Customer added successfully");
 
-      router.refresh();
+      utils.customer.getAll.invalidate();
     },
     onError: () => {
       toast.error(
@@ -49,18 +47,12 @@ export default function AddModal() {
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    mutation.mutate({
-      firstName,
-      lastName,
-      email,
-      phone,
-      address,
-    });
+    mutation.mutate(form);
   };
 
   return (
     <Dialog>
-      <Toaster richColors  />
+      <Toaster richColors />
       <div className="w-full flex justify-end mb-2">
         <DialogTrigger asChild>
           <Button variant="outline">Add Customer</Button>
@@ -70,8 +62,8 @@ export default function AddModal() {
         <DialogHeader>
           <DialogTitle>Add Customer</DialogTitle>
           <DialogDescription>
-            Fill in the details below to add a new customer.
-            Ensure all fields are completed accurately.
+            Fill in the details below to add a new customer. Ensure all fields
+            are completed accurately.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -83,8 +75,8 @@ export default function AddModal() {
               First Name
             </Label>
             <Input
-              value={firstName}
-              onChange={e => setFirstName(e.target.value)}
+              value={form.firstName}
+              onChange={e => updateFormField("firstName", e.target.value)}
               id="first-name"
               placeholder="Yaroslav"
               className="col-span-3"
@@ -98,8 +90,8 @@ export default function AddModal() {
               Last Name
             </Label>
             <Input
-              value={lastName}
-              onChange={e => setLastName(e.target.value)}
+              value={form.lastName}
+              onChange={e => updateFormField("lastName", e.target.value)}
               id="last-name"
               placeholder="Bisyk"
               className="col-span-3"
@@ -113,8 +105,8 @@ export default function AddModal() {
               Email
             </Label>
             <Input
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              value={form.email}
+              onChange={e => updateFormField("email", e.target.value)}
               id="email"
               placeholder="example@example.com"
               className="col-span-3"
@@ -128,8 +120,8 @@ export default function AddModal() {
               Phone
             </Label>
             <Input
-              value={phone}
-              onChange={e => setPhone(e.target.value)}
+              value={form.phone}
+              onChange={e => updateFormField("phone", e.target.value)}
               id="phone"
               placeholder="+1234567890"
               className="col-span-3"
@@ -143,8 +135,8 @@ export default function AddModal() {
               Address
             </Label>
             <Input
-              value={address}
-              onChange={e => setAddress(e.target.value)}
+              value={form.address}
+              onChange={e => updateFormField("address", e.target.value)}
               id="address"
               placeholder="123 Main St"
               className="col-span-3"

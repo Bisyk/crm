@@ -4,6 +4,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { trpc } from "@/trpc/client";
 import { columns } from "./columns";
 import AddModal from "./add-modal";
+import Loader from "@/components/loader";
 
 export default function OrdersPage() {
   const { data, error, isLoading } = trpc.order.getAll.useQuery();
@@ -23,6 +24,7 @@ export default function OrdersPage() {
           isFilterable={false}
         />
       )}
+      {isLoading && <Loader />}
     </div>
   );
 }

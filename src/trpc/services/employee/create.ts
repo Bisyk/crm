@@ -39,6 +39,10 @@ export const create = async ({
     },
   });
 
+  if (user) {
+    throw new Error("User already registered");
+  }
+
   if (!user) {
     const salt = randomBytes(8).toString("hex");
 
@@ -58,6 +62,7 @@ export const create = async ({
     } catch (error) {
       console.log("Failed to create user");
       console.error(error);
+      throw new Error("Failed to create user");
     }
 
     try {
