@@ -7,6 +7,8 @@ interface UpdateOrderInput {
   customerId: string;
   employeeId: string;
   orderId: string;
+  paymentStatus: string;
+  deliveryStatus: string;
   orderItems: OrderItem[];
 }
 
@@ -15,6 +17,8 @@ export const update = async ({
   customerId,
   employeeId,
   orderItems,
+  paymentStatus,
+  deliveryStatus,
   orderId,
 }: UpdateOrderInput) => {
   const isoTimeString = new Date(orderDate).toISOString();
@@ -28,6 +32,8 @@ export const update = async ({
         orderDate: isoTimeString,
         customerId,
         employeeId,
+        paymentStatus,
+        deliveryStatus,
       },
     });
 

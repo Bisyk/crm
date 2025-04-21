@@ -9,6 +9,8 @@ export const orderRouter = createTRPCRouter({
         orderDate: z.string(),
         customerId: z.string(),
         employeeId: z.string(),
+        paymentStatus: z.string(),
+        deliveryStatus: z.string(),
         orderItems: z.array(
           z.object({
             quantity: z.number(),
@@ -35,6 +37,8 @@ export const orderRouter = createTRPCRouter({
         customerId: z.string(),
         employeeId: z.string(),
         orderId: z.string(),
+        paymentStatus: z.string(),
+        deliveryStatus: z.string(),
         orderItems: z.array(
           z.object({
             quantity: z.number(),

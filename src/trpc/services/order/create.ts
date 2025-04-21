@@ -7,6 +7,8 @@ interface CreateOrderInput {
   orderDate: string;
   customerId: string;
   employeeId: string;
+  paymentStatus: string;
+  deliveryStatus: string;
   orderItems: OrderItem[];
 }
 
@@ -15,6 +17,8 @@ export const create = async ({
   customerId,
   employeeId,
   orderItems,
+  paymentStatus,
+  deliveryStatus,
 }: CreateOrderInput) => {
   const { shop } = await getUser();
 
@@ -26,6 +30,8 @@ export const create = async ({
         orderDate: isoTimeString,
         customerId,
         employeeId,
+        paymentStatus,
+        deliveryStatus,
         shopId: shop.id,
       },
     });

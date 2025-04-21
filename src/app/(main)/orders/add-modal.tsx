@@ -31,10 +31,31 @@ interface AddModalProps {
   children: React.ReactNode;
 }
 
+const PAYMENT_STATUSES = [
+  "pending",
+  "processing",
+  "paid",
+  "failed",
+  "refunded",
+  "cancelled",
+];
+
+const DELIVERY_STATUSES = [
+  "processing",
+  "packed",
+  "shipped",
+  "in_transit",
+  "delivered",
+  "returned",
+  "cancelled",
+];
+
 const INITIAL_FORM_VALUE = {
   orderDate: "",
   customerId: "",
   employeeId: "",
+  paymentStatus: "pending",
+  deliveryStatus: "processing",
 };
 
 export default function AddModal({ id, children }: AddModalProps) {
@@ -71,6 +92,8 @@ export default function AddModal({ id, children }: AddModalProps) {
       updateFormField("orderDate", formattedDate);
       updateFormField("customerId", order.customerId);
       updateFormField("employeeId", order.employeeId);
+      updateFormField("paymentStatus", order.paymentStatus);
+      updateFormField("deliveryStatus", order.deliveryStatus);
 
       setAddedProducts(orderItems);
     }
@@ -259,6 +282,58 @@ export default function AddModal({ id, children }: AddModalProps) {
                     </SelectItem>
                   )
                 )}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label
+              htmlFor="payment-status"
+              className="text-right"
+            >
+              Payment Status
+            </Label>
+            <Select
+              onValueChange={value => updateFormField("paymentStatus", value)}
+              value={form.paymentStatus}
+            >
+              <SelectTrigger className="w-[180px] md:w-[410px] lg:w-[555px]">
+                <SelectValue placeholder="Select Status" />
+              </SelectTrigger>
+              <SelectContent>
+                {PAYMENT_STATUSES.map((s: string) => (
+                  <SelectItem
+                    key={s}
+                    value={s}
+                  >
+                    {s}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label
+              htmlFor="delivery-status"
+              className="text-right"
+            >
+              Delivery Status
+            </Label>
+            <Select
+              onValueChange={value => updateFormField("deliveryStatus", value)}
+              value={form.deliveryStatus}
+            >
+              <SelectTrigger className="w-[180px] md:w-[410px] lg:w-[555px]">
+                <SelectValue placeholder="Select Status" />
+              </SelectTrigger>
+              <SelectContent>
+                {DELIVERY_STATUSES.map((s: string) => (
+                  <SelectItem
+                    key={s}
+                    value={s}
+                  >
+                    {s}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
