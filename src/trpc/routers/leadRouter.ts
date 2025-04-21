@@ -33,4 +33,8 @@ export const leadRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       leadService.update(input.id, input.stage);
     }),
+  getTotalNumber: baseProcedure.query(async () => {
+    const total = leadService.getTotalNumber();
+    return total;
+  }),
 });

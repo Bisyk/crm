@@ -8,18 +8,25 @@ import prisma from "./prisma";
 
 export const verifySession = cache(async () => {
   const cookie = (await cookies()).get("session")?.value;
-  const session = await decrypt(cookie);
 
-  if (!session?.userId) {
-    redirect("/signup");
-  }
+  try {
+    const session = await decrypt(cookie);
 
-  return { isAuth: true, userId: session.userId };
+    if (!session?.userId) {
+      redirect("/signup");
+    }
+
+    return { isAuth: true, userId: session.userId };
+  } catch (error) {}
 });
 
 export const getUser = cache(async () => {
   const session = await verifySession();
-  if (!session) return null;
+  console.log("getUser session: ", session);
+
+  if (!session) {
+    return null;
+  }
 
   try {
     const user = await prisma.user.findUnique({

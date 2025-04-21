@@ -25,4 +25,9 @@ export const customerRouter = createTRPCRouter({
     const customers = await customerService.getAll();
     return customers;
   }),
+  getTotalNumber: baseProcedure.query(async () => {
+    const total = await customerService.getTotalNumber();
+
+    return total;
+  }),
 });

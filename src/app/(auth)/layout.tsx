@@ -9,6 +9,8 @@ export default async function Layout({
 }) {
   const user = await getUser();
 
+  console.log(user);
+
   if (user) {
     redirect("dashboard");
   }
