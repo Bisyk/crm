@@ -10,7 +10,7 @@ export default function BrandsTab() {
 
   return (
     <div className="container mx-auto">
-      <div className="w-full flex justify-end mb-2">
+       <div className="w-full flex justify-start items center">
         <AddModal />
       </div>
       {data && !isLoading && (

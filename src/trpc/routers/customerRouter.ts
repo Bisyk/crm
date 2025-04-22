@@ -30,4 +30,39 @@ export const customerRouter = createTRPCRouter({
 
     return total;
   }),
+  getById: baseProcedure.input(z.string()).query(async opts => {
+    const customer = await customerService.getById(opts.input);
+
+    if (!customer) {
+      throw new Error("Failed to fetch customer by ID");
+    }
+    return customer;
+  }),
+  update: baseProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        firstName: z.string(),
+        lastName: z.string(),
+        email: z.string(),
+        phone: z.string(),
+        address: z.string(),
+      })
+    )
+    .mutation(async opts => {
+      const customer = await customerService.update(opts.input.id, opts.input);
+
+      if (!customer) {
+        throw new Error("Failed to update customer");
+      }
+      return customer;
+    }),
+  delete: baseProcedure.input(z.string()).mutation(async opts => {
+    const customer = await customerService.deleteCustomer(opts.input);
+
+    if (!customer) {
+      throw new Error("Failed to delete customer");
+    }
+    return customer;
+  }),
 });

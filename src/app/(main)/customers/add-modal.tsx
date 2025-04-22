@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Toaster, toast } from "sonner";
 import { trpc } from "@/trpc/client";
 import { useForm } from "@/hooks/use-form";
+import { useEffect } from "react";
 
 const INITIAL_FORM_VALUE = {
   firstName: "",
@@ -24,10 +25,31 @@ const INITIAL_FORM_VALUE = {
   address: "",
 };
 
-export default function AddModal() {
+interface AddModalProps {
+  id?: string;
+  children: React.ReactNode;
+}
+
+export default function AddModal({ id, children }: AddModalProps) {
   const { form, resetForm, updateFormField } = useForm(INITIAL_FORM_VALUE);
 
   const utils = trpc.useUtils();
+
+  const { data: customerData } = trpc.customer.getById.useQuery(id!, {
+    enabled: !!id,
+  });
+
+  useEffect(() => {
+    if (customerData) {
+      updateFormField("firstName", customerData.firstName);
+      updateFormField("lastName", customerData.lastName);
+      updateFormField("email", customerData.email);
+      updateFormField("phone", customerData.phone);
+      updateFormField("address", customerData.address);
+    }
+  }, [customerData]);
+
+  console.log(customerData);
 
   const mutation = trpc.customer.create.useMutation({
     onSuccess: () => {
@@ -44,18 +66,47 @@ export default function AddModal() {
     },
   });
 
+  const updateMutation = trpc.customer.update.useMutation({
+    onSuccess: () => {
+      toast.success("Customer updated successfully");
+
+      utils.customer.getAll.invalidate();
+    },
+    onError: () => {
+      toast.error(
+        "Ooooops! Something went wrong. Customer not updated. Please check your inputs and try again."
+      );
+    },
+  });
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
 
     mutation.mutate(form);
   };
 
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!id) return;
+
+    updateMutation.mutate({ id, ...form });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    if (id) {
+      handleUpdate(e);
+    } else {
+      handleCreate(e);
+    }
+  };
+
   return (
     <Dialog>
       <Toaster richColors />
-      <div className="w-full flex justify-end mb-2">
+       <div className="w-full flex justify-start items center">
         <DialogTrigger asChild>
-          <Button variant="outline">Add Customer</Button>
+          <Button variant="outline">{children}</Button>
         </DialogTrigger>
       </div>
       <DialogContent className="sm:max-w-[425px]">
@@ -148,10 +199,10 @@ export default function AddModal() {
             <Button
               type="submit"
               onClick={e => {
-                handleCreate(e);
+                handleSubmit(e);
               }}
             >
-              Add Customer
+              {`${id ? "Edit Customer" : "Add Customer"}`}
             </Button>
           </DialogClose>
         </DialogFooter>

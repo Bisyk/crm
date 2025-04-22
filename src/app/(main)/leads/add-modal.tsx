@@ -137,7 +137,7 @@ export default function AddModal() {
   return (
     <Dialog>
       <Toaster richColors />
-      <div className="w-full flex justify-end mb-2">
+       <div className="w-full flex justify-start items center">
         <DialogTrigger asChild>
           <Button variant="outline">Add Lead</Button>
         </DialogTrigger>

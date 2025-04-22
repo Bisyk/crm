@@ -12,7 +12,9 @@ export default function CustomersPage() {
     <div className="container mx-auto">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Customers</h1>
-        <AddModal />
+        <div>
+          <AddModal>Add Customer</AddModal>
+        </div>
       </div>
       {data && (
         <DataTable

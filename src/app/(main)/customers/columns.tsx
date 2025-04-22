@@ -1,6 +1,9 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import AddModal from "./add-modal";
+import { Pencil, Trash } from "lucide-react";
+import DeleteDialog from "./delete-dialog";
 
 export type Customer = {
   id: string;
@@ -31,5 +34,22 @@ export const columns: ColumnDef<Customer>[] = [
   {
     accessorKey: "address",
     header: "Address",
+  },
+  {
+    accessorKey: "id",
+    header: "Actions",
+    cell: ({ row }) => {
+      const id = row.getValue("id") as string;
+      return (
+        <div className="flex items-center gap-2">
+          <DeleteDialog id={id}>
+            <Trash />
+          </DeleteDialog>
+          <AddModal id={id}>
+            <Pencil />
+          </AddModal>
+        </div>
+      );
+    },
   },
 ];
