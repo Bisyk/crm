@@ -5,12 +5,15 @@ import AreaChartLinearComponent from "@/components/area-chart-linear";
 import { DollarSign, Headset, PackageOpen, Users } from "lucide-react";
 import InfoCard from "@/components/info-card";
 import { trpc } from "@/trpc/client";
+import { formatCurrency } from "@/utils/currency/formatCurrency";
 
 export default function Dashboard() {
   const { data: totalCustomers } = trpc.customer.getTotalNumber.useQuery();
   const { data: totalLeads } = trpc.lead.getTotalNumber.useQuery();
+  const { data: totalRevenue } = trpc.order.getTotalRevenue.useQuery();
+  const { data: totalSales } = trpc.order.getTotalSales.useQuery();
 
-  console.log(totalCustomers);
+  console.log(totalRevenue);
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
@@ -18,7 +21,7 @@ export default function Dashboard() {
         <div className="bg-muted/50 rounded-xl">
           <InfoCard
             title="Total Revenue"
-            value="$45,231.89"
+            value={totalRevenue ? `$ ${formatCurrency(totalRevenue)}` : "0"}
             secondary="+20.1% from last month"
             icon={<DollarSign />}
           />
@@ -26,7 +29,7 @@ export default function Dashboard() {
         <div className="bg-muted/50 rounded-xl">
           <InfoCard
             title="Total Sales"
-            value="2350"
+            value={totalSales ?? "0"}
             secondary="+20.1% from last month"
             icon={<PackageOpen />}
           />
@@ -34,7 +37,7 @@ export default function Dashboard() {
         <div className="bg-muted/50 rounded-xl">
           <InfoCard
             title="Total Leads"
-            value={totalLeads}
+            value={totalLeads ?? "0"}
             secondary="+201 from last month"
             icon={<Headset />}
           />
@@ -42,7 +45,7 @@ export default function Dashboard() {
         <div className="bg-muted/50 rounded-xl">
           <InfoCard
             title="Total Customers"
-            value={totalCustomers}
+            value={totalCustomers ?? "0"}
             secondary="+201 from last month"
             icon={<Users />}
           />

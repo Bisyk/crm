@@ -59,4 +59,14 @@ export const orderRouter = createTRPCRouter({
     const order = await orderService.getById(opts.input);
     return order;
   }),
+  getTotalRevenue: baseProcedure.query(async () => {
+    const totalOrderPrice = await orderService.getTotalRevenue();
+
+    return totalOrderPrice;
+  }),
+  getTotalSales: baseProcedure.query(async () => {
+    const totalSales = await orderService.getTotalSales();
+
+    return totalSales;
+  }),
 });
