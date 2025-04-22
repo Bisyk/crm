@@ -69,4 +69,12 @@ export const orderRouter = createTRPCRouter({
 
     return totalSales;
   }),
+  delete: baseProcedure.input(z.string()).mutation(async opts => {
+    const order = await orderService.deleteOrder(opts.input);
+
+    if (!order) {
+      throw new Error("Failed to delete order");
+    }
+    return order;
+  }),
 });
