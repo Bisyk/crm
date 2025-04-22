@@ -25,7 +25,7 @@ import {
 import ProductsList from "@/components/products-list";
 import { OrderItem } from "@/types/shared";
 import { useForm } from "@/hooks/use-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const stages = ["New", "Thinking", "In Progress", "Closed", "Lost"];
 
@@ -39,7 +39,12 @@ const INITIAL_FORM_VALUE = {
   employeeId: "",
 };
 
-export default function AddModal() {
+interface AddModalProps {
+  id?: string;
+  children: React.ReactNode;
+}
+
+export default function AddModal({ id, children }: AddModalProps) {
   const { form, resetForm, updateFormField } = useForm(INITIAL_FORM_VALUE);
   const [leadInterestProducts, setLeadInterestProducts] = useState<OrderItem[]>(
     []
@@ -50,6 +55,34 @@ export default function AddModal() {
   const { data: products } = trpc.product.getAll.useQuery();
 
   const utils = trpc.useUtils();
+
+  const { data: leadData } = trpc.lead.getById.useQuery(id!, {
+    enabled: !!id,
+  });
+
+  useEffect(() => {
+    if (leadData) {
+      console.log(leadData);
+
+      updateFormField("firstName", leadData.firstName);
+      updateFormField("lastName", leadData.lastName);
+      updateFormField("email", leadData.email);
+      updateFormField("phone", leadData.phone);
+      updateFormField("notes", leadData.notes);
+      updateFormField("stage", leadData.stage);
+      updateFormField("employeeId", leadData.employeeId);
+      setLeadInterestProducts(
+        leadData.leadInterests.map((i: any) => {
+          return {
+            productId: i.productId,
+            name: i.product.name,
+            price: i.product.price,
+            quantity: i.quantity,
+          };
+        })
+      );
+    }
+  }, [leadData]);
 
   const mutation = trpc.lead.create.useMutation({
     onSuccess: () => {
@@ -67,6 +100,19 @@ export default function AddModal() {
     },
   });
 
+  const updateMutation = trpc.lead.update.useMutation({
+    onSuccess: () => {
+      toast.success("Lead updated successfully");
+
+      utils.lead.getAll.invalidate();
+    },
+    onError: () => {
+      toast.error(
+        "Ooooops! Something went wrong. Lead not updated. Please check your inputs and try again."
+      );
+    },
+  });
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -74,6 +120,26 @@ export default function AddModal() {
       ...form,
       interests: leadInterestProducts,
     });
+  };
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!id) return;
+
+    updateMutation.mutate({
+      id,
+      ...form,
+      interests: leadInterestProducts,
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    if (id) {
+      handleUpdate(e);
+    } else {
+      handleCreate(e);
+    }
   };
 
   const handleAddProduct = () => {
@@ -137,9 +203,9 @@ export default function AddModal() {
   return (
     <Dialog>
       <Toaster richColors />
-       <div className="w-full flex justify-start items center">
+      <div className="w-full flex justify-start items center">
         <DialogTrigger asChild>
-          <Button variant="outline">Add Lead</Button>
+          <Button variant="outline">{children}</Button>
         </DialogTrigger>
       </div>
       <DialogContent className="max-w-[425px] md:max-w-[600px] lg:max-w-[800px]">
@@ -339,10 +405,10 @@ export default function AddModal() {
             <Button
               type="submit"
               onClick={e => {
-                handleCreate(e);
+                handleSubmit(e);
               }}
             >
-              Add Lead
+              {`${id ? "Edit" : "Add"} Lead`}
             </Button>
           </DialogClose>
         </DialogFooter>

@@ -31,10 +31,50 @@ export const leadRouter = createTRPCRouter({
   updateStage: baseProcedure
     .input(z.object({ id: z.string(), stage: z.string() }))
     .mutation(async ({ input }) => {
-      leadService.update(input.id, input.stage);
+      leadService.updateStage(input.id, input.stage);
     }),
   getTotalNumber: baseProcedure.query(async () => {
     const total = leadService.getTotalNumber();
     return total;
+  }),
+  getById: baseProcedure.input(z.string()).query(async ({ input }) => {
+    const lead = await leadService.getById(input);
+    if (!lead) {
+      throw new Error("Failed to fetch lead by ID");
+    }
+    return lead;
+  }),
+  update: baseProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        firstName: z.string(),
+        lastName: z.string(),
+        email: z.string(),
+        phone: z.string(),
+        notes: z.string(),
+        stage: z.string(),
+        employeeId: z.string(),
+        interests: z.array(
+          z.object({
+            productId: z.string(),
+            quantity: z.number(),
+          })
+        ),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const lead = await leadService.update(input.id, input);
+      if (!lead) {
+        throw new Error("Failed to update lead");
+      }
+      return lead;
+    }),
+  delete: baseProcedure.input(z.string()).mutation(async ({ input }) => {
+    const lead = await leadService.deleteLead(input);
+    if (!lead) {
+      throw new Error("Failed to delete lead");
+    }
+    return lead;
   }),
 });

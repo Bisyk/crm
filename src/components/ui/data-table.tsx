@@ -7,6 +7,7 @@ import {
   useReactTable,
   ColumnFiltersState,
   getFilteredRowModel,
+  getSortedRowModel,
 } from "@tanstack/react-table";
 
 import { Input } from "@/components/ui/input";
@@ -26,6 +27,9 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   isFilterable?: boolean;
   fieldToSortBy?: string;
+  initialState?: {
+    sorting: { id: string; desc: boolean }[];
+  };
 }
 
 export function DataTable<TData, TValue>({
@@ -33,6 +37,7 @@ export function DataTable<TData, TValue>({
   data,
   isFilterable = true,
   fieldToSortBy,
+  initialState,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -42,8 +47,10 @@ export function DataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(), //provide a sorting row model
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    initialState: initialState ?? {},
     state: {
       columnFilters,
     },

@@ -13,13 +13,23 @@ export default function LeadsPage() {
     <div className="container mx-auto">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Leads</h1>
-        <AddModal />
+        <div>
+          <AddModal>Add Lead</AddModal>
+        </div>
       </div>
       {data && (
         <DataTable
           data={data}
           columns={columns}
           fieldToSortBy="email"
+          initialState={{
+            sorting: [
+              {
+                id: "updatedAt",
+                desc: true,
+              },
+            ],
+          }}
         />
       )}
       {isLoading && <Loader />}

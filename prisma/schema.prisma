@@ -84,15 +84,17 @@ model Customer {
 }
 
 model Lead {
-  id         String  @id @default(cuid())
+  id         String   @id @default(cuid())
   firstName  String
   lastName   String
-  email      String? @unique
+  email      String?  @unique
   phone      String?
   notes      String?
   stage      String?
   shopId     String
   employeeId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   // A lead belongs to a single shop (tenant)
   shop Shop @relation(fields: [shopId], references: [id], onDelete: Cascade)

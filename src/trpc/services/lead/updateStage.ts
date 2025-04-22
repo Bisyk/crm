@@ -1,8 +1,8 @@
 import prisma from "@/lib/prisma";
 
-export const update = async (id: string, stage: string) => {
+export const updateStage = async (id: string, stage: string) => {
   try {
-    await prisma.lead.update({
+    const updatedLead = await prisma.lead.update({
       where: {
         id,
       },
@@ -10,6 +10,8 @@ export const update = async (id: string, stage: string) => {
         stage,
       },
     });
+
+    return updatedLead;
   } catch (error) {
     throw new Error("Failed to update lead");
   }

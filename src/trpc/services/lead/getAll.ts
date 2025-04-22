@@ -17,6 +17,8 @@ export const getAll = async () => {
         phone: true,
         notes: true,
         stage: true,
+        createdAt: true,
+        updatedAt: true,
         leadInterests: {
           select: {
             quantity: true,

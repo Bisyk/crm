@@ -1,12 +1,15 @@
 export const formatDate = (isoDateString: string) => {
   const date = new Date(isoDateString);
 
-  const day = date.getUTCDate().toString().padStart(2, "0");
-  const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
-  const year = date.getUTCFullYear();
+  const formatter = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Kyiv",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 
-  const hours = date.getUTCHours().toString().padStart(2, "0");
-  const minutes = date.getUTCMinutes().toString().padStart(2, "0");
-
-  return `${day}.${month}.${year} ${hours}:${minutes}`;
+  return formatter.format(date).replace(",", "");
 };

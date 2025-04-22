@@ -1,6 +1,10 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import AddModal from "./add-modal";
+import { Pencil, Trash } from "lucide-react";
+import { formatDate } from "@/utils/time/formatDate";
+import DeleteDialog from "./delete-dialog";
 
 export type Lead = {
   id: string;
@@ -11,6 +15,7 @@ export type Lead = {
   interest: string;
   notes: string;
   stage: string;
+  updatedAt: string;
 };
 
 export const columns: ColumnDef<Lead>[] = [
@@ -31,6 +36,15 @@ export const columns: ColumnDef<Lead>[] = [
     header: "Phone",
   },
   {
+    accessorKey: "updatedAt",
+    header: "Updated At",
+    sortingFn: "datetime",
+    cell: ({ row }) => {
+      const updatedAt = row.getValue("updatedAt") as string;
+      return <span>{formatDate(updatedAt)}</span>;
+    },
+  },
+  {
     accessorKey: "leadInterests",
     header: "Interest",
     cell: ({ row }) => {
@@ -46,5 +60,22 @@ export const columns: ColumnDef<Lead>[] = [
   {
     accessorKey: "stage",
     header: "Stage",
+  },
+  {
+    accessorKey: "id",
+    header: "Actions",
+    cell: ({ row }) => {
+      const id = row.getValue("id") as string;
+      return (
+        <div className="flex gap-2">
+          <DeleteDialog id={id}>
+            <Trash />
+          </DeleteDialog>
+          <AddModal id={id}>
+            <Pencil />
+          </AddModal>
+        </div>
+      );
+    },
   },
 ];
