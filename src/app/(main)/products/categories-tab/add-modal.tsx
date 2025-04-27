@@ -48,17 +48,17 @@ export default function AddModal() {
   return (
     <Dialog>
       <Toaster richColors />
-       <div className="w-full flex justify-start items center">
+      <div className="w-full flex justify-end items-center mb-2">
         <DialogTrigger asChild>
           <Button variant="outline">Add Category</Button>
         </DialogTrigger>
       </div>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Customer</DialogTitle>
+          <DialogTitle>Add Category</DialogTitle>
           <DialogDescription>
-            Fill in the details below to add a new category.
-            Ensure all fields are completed accurately.
+            Fill in the details below to add a new category. Ensure all fields
+            are completed accurately.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
