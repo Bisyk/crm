@@ -17,6 +17,11 @@ export default function ProductsGrid({ products }: { products: Product[] }) {
             lowStockThreshold={p.lowStockThreshold}
           />
         ))}
+      {!products.length && (
+        <div className="flex flex-col items-center justify-center w-full h-full">
+          No products available
+        </div>
+      )}
     </div>
   );
 }
