@@ -8,12 +8,14 @@ const scrypt = promisify(_scrypt);
 export const signup = async ({
   email,
   password,
-  name,
+  firstName,
+  lastName,
   shopName,
 }: {
   email: string;
   password: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   shopName: string;
 }) => {
   const salt = randomBytes(8).toString("hex");
@@ -23,27 +25,44 @@ export const signup = async ({
   const result = salt + "." + hash.toString("hex");
 
   try {
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password: result,
-        name,
-        type: 'admin',
-      },
-    });
+    const resultData = await prisma.$transaction(async (tx: any) => {
+      const user = await tx.user.create({
+        data: {
+          email,
+          password: result,
+          firstName,
+          lastName,
+          type: "admin",
+        },
+      });
 
-    const shop = await prisma.shop.create({
-      data: {
-        name: shopName,
-        ownerId: user.id,
-      },
-    });
+      const shop = await tx.shop.create({
+        data: {
+          name: shopName,
+          ownerId: user.id,
+        },
+      });
 
-    await createSession(user.id);
+      const employee = await tx.employee.create({
+        data: {
+          firstName,
+          lastName,
+          email,
+          shopId: shop.id,
+          position: "admin",
+          salary: 0,
+          hireDate: new Date(),
+        },
+      });
+
+      await createSession(user.id);
+
+      return { user };
+    });
 
     return {
       success: true,
-      userId: user.id,
+      userId: resultData.user.id,
     };
   } catch (error) {
     console.log(error);

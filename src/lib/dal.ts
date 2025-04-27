@@ -35,7 +35,8 @@ export const getUser = cache(async () => {
       },
       select: {
         id: true,
-        name: true,
+        firstName: true,
+        lastName: true,
         email: true,
         type: true,
       },
@@ -91,6 +92,7 @@ export const getUser = cache(async () => {
       },
     };
   } catch (error) {
+    console.error("Error fetching user:", error);
     console.log("Failed to fetch user");
     return null;
   }

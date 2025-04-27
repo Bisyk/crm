@@ -7,12 +7,17 @@ import {
 } from "@/components/ui/sidebar";
 import { getUser } from "@/lib/dal";
 import { TRPCProvider } from "@/trpc/client";
+import { redirect } from "next/navigation";
 import React from "react";
 
 export default async function MainLayout({
   children,
 }: React.PropsWithChildren<{}>) {
   const user = await getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
 
   return (
     <TRPCProvider>

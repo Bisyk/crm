@@ -48,7 +48,8 @@ export function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   userInfo: {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     avatar: string;
     id: string;
@@ -61,7 +62,8 @@ export function AppSidebar({
 }) {
   const data = {
     user: {
-      name: userInfo.name,
+      firstName: userInfo.firstName,
+      lastName: userInfo.lastName,
       email: userInfo.email,
       avatar: "https://avatars.githubusercontent.com/u/1403668?v=4",
     },
