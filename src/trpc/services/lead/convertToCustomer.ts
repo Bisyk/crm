@@ -67,7 +67,7 @@ export const convertToCustomer = async (leadId: string, employeeId: string) => {
     const updatedLead = await tx.lead.update({
       where: { id: leadId },
       data: {
-        stage: "converted",
+        stage: "Converted",
       },
     });
 

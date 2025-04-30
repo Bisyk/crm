@@ -427,12 +427,14 @@ export default function AddModal({ id, children }: AddModalProps) {
         <DialogFooter>
           <DialogClose asChild>
             <div className="w-full flex justify-end items-center space-x-2">
-              <Button
-                variant="outline"
-                onClick={e => handleConvert(e)}
-              >
-                Convert to Customer
-              </Button>
+              {leadData && leadData.stage !== "Converted" && (
+                <Button
+                  variant="outline"
+                  onClick={e => handleConvert(e)}
+                >
+                  Convert to Customer
+                </Button>
+              )}
               <Button
                 type="submit"
                 onClick={e => {
