@@ -21,6 +21,7 @@ export const leadRouter = createTRPCRouter({
           z.object({
             productId: z.string(),
             quantity: z.number(),
+            price: z.string(),
           })
         ),
       })
@@ -77,4 +78,16 @@ export const leadRouter = createTRPCRouter({
     }
     return lead;
   }),
+  convertToCustomer: baseProcedure
+    .input(z.object({ leadId: z.string(), employeeId: z.string() }))
+    .mutation(async ({ input }) => {
+      const customer = await leadService.convertToCustomer(
+        input.leadId,
+        input.employeeId
+      );
+      if (!customer) {
+        throw new Error("Failed to convert lead to customer");
+      }
+      return customer;
+    }),
 });

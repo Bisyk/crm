@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 interface Interest {
   productId: string;
   quantity: number;
+  price: string;
 }
 
 interface CreateLeadInput {
@@ -27,7 +28,7 @@ export const create = async ({
   employeeId,
   interests,
 }: CreateLeadInput) => {
-  const {shop} = await getUser()
+  const { shop } = await getUser();
 
   try {
     const lead = await prisma.lead.create({
@@ -48,6 +49,7 @@ export const create = async ({
         leadId: lead.id,
         productId: interest.productId,
         quantity: interest.quantity,
+        price: interest.price,
       })),
     });
 

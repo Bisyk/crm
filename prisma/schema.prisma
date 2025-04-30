@@ -108,6 +108,7 @@ model LeadInterest {
   leadId    String
   productId String
   quantity  Int
+  price     Decimal
   lead      Lead    @relation(fields: [leadId], references: [id], onDelete: Cascade)
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }

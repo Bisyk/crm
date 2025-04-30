@@ -27,7 +27,7 @@ import { OrderItem } from "@/types/shared";
 import { useForm } from "@/hooks/use-form";
 import { useEffect, useState } from "react";
 
-const stages = ["New", "Thinking", "In Progress", "Closed", "Lost"];
+const stages = ["New", "Thinking", "In Progress", "Done", "Lost", "Converted"];
 
 const INITIAL_FORM_VALUE = {
   firstName: "",
@@ -113,6 +113,19 @@ export default function AddModal({ id, children }: AddModalProps) {
     },
   });
 
+  const convertMutation = trpc.lead.convertToCustomer.useMutation({
+    onSuccess: () => {
+      toast.success("Lead converted to customer successfully");
+
+      utils.lead.getAll.invalidate();
+    },
+    onError: () => {
+      toast.error(
+        "Ooooops! Something went wrong. Lead not converted. Please check your inputs and try again."
+      );
+    },
+  });
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -140,6 +153,17 @@ export default function AddModal({ id, children }: AddModalProps) {
     } else {
       handleCreate(e);
     }
+  };
+
+  const handleConvert = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!id) return;
+
+    convertMutation.mutate({
+      leadId: id,
+      employeeId: form.employeeId,
+    });
   };
 
   const handleAddProduct = () => {
@@ -402,14 +426,22 @@ export default function AddModal({ id, children }: AddModalProps) {
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button
-              type="submit"
-              onClick={e => {
-                handleSubmit(e);
-              }}
-            >
-              {`${id ? "Edit" : "Add"} Lead`}
-            </Button>
+            <div className="w-full flex justify-end items-center space-x-2">
+              <Button
+                variant="outline"
+                onClick={e => handleConvert(e)}
+              >
+                Convert to Customer
+              </Button>
+              <Button
+                type="submit"
+                onClick={e => {
+                  handleSubmit(e);
+                }}
+              >
+                {`${id ? "Edit" : "Add"} Lead`}
+              </Button>
+            </div>
           </DialogClose>
         </DialogFooter>
       </DialogContent>
