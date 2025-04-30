@@ -210,7 +210,7 @@ export default function AddModal({ id, children }: AddModalProps) {
       </div>
       <DialogContent className="max-w-[425px] md:max-w-[600px] lg:max-w-[800px]">
         <DialogHeader>
-          <DialogTitle>Add Lead</DialogTitle>
+          <DialogTitle>{id ? "Edit" : "Add"} Lead</DialogTitle>
           <DialogDescription>
             Fill in the details below to add a new lead. Ensure all fields are
             completed accurately.
