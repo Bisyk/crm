@@ -18,21 +18,21 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
+  { month: "January", clients: 186, leads: 80 },
+  { month: "February", clients: 305, leads: 200 },
+  { month: "March", clients: 237, leads: 120 },
+  { month: "April", clients: 73, leads: 190 },
+  { month: "May", clients: 209, leads: 130 },
+  { month: "June", clients: 214, leads: 140 },
 ];
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  clients: {
+    label: "Clients",
     color: "hsl(var(--chart-1))",
   },
-  mobile: {
-    label: "Mobile",
+  leads: {
+    label: "Leads",
     color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
@@ -41,9 +41,9 @@ export default function AreaChartComponent() {
   return (
     <Card className="h-full">
       <CardHeader>
-        <CardTitle>Area Chart - Stacked</CardTitle>
+        <CardTitle>Clients vs Leads</CardTitle>
         <CardDescription>
-          Showing total visitors for the last 6 months
+          Showing total clients and leads for the last 6 months
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -69,19 +69,19 @@ export default function AreaChartComponent() {
               content={<ChartTooltipContent indicator="dot" />}
             />
             <Area
-              dataKey="mobile"
+              dataKey="clients"
               type="natural"
-              fill="var(--color-mobile)"
+              fill="var(--color-clients)"
               fillOpacity={0.4}
-              stroke="var(--color-mobile)"
+              stroke="var(--color-clients)"
               stackId="a"
             />
             <Area
-              dataKey="desktop"
+              dataKey="leads"
               type="natural"
-              fill="var(--color-desktop)"
+              fill="var(--color-leads)"
               fillOpacity={0.4}
-              stroke="var(--color-desktop)"
+              stroke="var(--color-leads)"
               stackId="a"
             />
           </AreaChart>

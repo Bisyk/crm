@@ -18,17 +18,17 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
+  { month: "January", sales: 186 },
+  { month: "February", sales: 305 },
+  { month: "March", sales: 237 },
+  { month: "April", sales: 73 },
+  { month: "May", sales: 209 },
+  { month: "June", sales: 214 },
 ];
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  sales: {
+    label: "Sales",
     color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig;
@@ -37,9 +37,9 @@ export default function AreaChartLinearComponent() {
   return (
     <Card className="h-full">
       <CardHeader>
-        <CardTitle>Area Chart - Linear</CardTitle>
+        <CardTitle>Total Sales</CardTitle>
         <CardDescription>
-          Showing total visitors for the last 6 months
+          Showing total sales for the last 6 months
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -70,11 +70,11 @@ export default function AreaChartLinearComponent() {
               }
             />
             <Area
-              dataKey="desktop"
+              dataKey="sales"
               type="linear"
-              fill="var(--color-desktop)"
+              fill="var(--color-sales)"
               fillOpacity={0.4}
-              stroke="var(--color-desktop)"
+              stroke="var(--color-sales)"
             />
           </AreaChart>
         </ChartContainer>
