@@ -12,7 +12,7 @@ import React from "react";
 
 export default async function MainLayout({
   children,
-}: React.PropsWithChildren<{}>) {
+}: React.PropsWithChildren<object>) {
   const user = await getUser();
 
   if (!user) {

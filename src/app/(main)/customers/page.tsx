@@ -3,7 +3,6 @@ import { trpc } from "@/trpc/client";
 import AddModal from "./add-modal";
 import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
-import Loader from "@/components/loader";
 
 export default function CustomersPage() {
   const { data, isLoading } = trpc.customer.getAll.useQuery();

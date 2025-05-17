@@ -4,7 +4,6 @@ import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
 import AddModal from "./add-modal";
 import { trpc } from "@/trpc/client";
-import Loader from "@/components/loader";
 
 export default function EmployeesPage() {
   const { data, isLoading } = trpc.employee.getAll.useQuery();

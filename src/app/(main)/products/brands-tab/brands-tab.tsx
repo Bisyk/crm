@@ -6,7 +6,7 @@ import { columns } from "./columns";
 import AddModal from "./add-modal";
 
 export default function BrandsTab() {
-  const { data, error, isLoading } = trpc.brand.getAll.useQuery();
+  const { data, isLoading } = trpc.brand.getAll.useQuery();
 
   return (
     <div className="container mx-auto">
