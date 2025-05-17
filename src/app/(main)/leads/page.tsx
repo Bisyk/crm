@@ -17,22 +17,20 @@ export default function LeadsPage() {
           <AddModal>Add Lead</AddModal>
         </div>
       </div>
-      {data && (
-        <DataTable
-          data={data}
-          columns={columns}
-          fieldToSortBy="email"
-          initialState={{
-            sorting: [
-              {
-                id: "updatedAt",
-                desc: true,
-              },
-            ],
-          }}
-        />
-      )}
-      {isLoading && <Loader />}
+      <DataTable
+        data={data}
+        isLoading={isLoading}
+        columns={columns}
+        fieldToSortBy="email"
+        initialState={{
+          sorting: [
+            {
+              id: "updatedAt",
+              desc: true,
+            },
+          ],
+        }}
+      />
     </div>
   );
 }

@@ -17,14 +17,12 @@ export default function OrdersPage() {
           <AddModal>Add Order</AddModal>
         </div>
       </div>
-      {data && !isLoading && (
-        <DataTable
-          data={data}
-          columns={columns}
-          isFilterable={false}
-        />
-      )}
-      {isLoading && <Loader />}
+      <DataTable
+        data={data}
+        columns={columns}
+        isFilterable={false}
+        isLoading={isLoading}
+      />
     </div>
   );
 }

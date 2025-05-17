@@ -40,14 +40,12 @@ export default function ProductsTab() {
           className="w-full"
           value="table"
         >
-          {data && !error && (
-            <DataTable
-              data={data}
-              columns={columns}
-              fieldToSortBy="name"
-            />
-          )}
-          {isLoading && <Loader />}
+          <DataTable
+            data={data}
+            columns={columns}
+            fieldToSortBy="name"
+            isLoading={isLoading}
+          />
         </TabsContent>
       </Tabs>
     </div>

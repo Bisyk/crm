@@ -17,14 +17,12 @@ export default function EmployeesPage() {
           <AddModal>Add Employee</AddModal>
         </div>
       </div>
-      {data && (
-        <DataTable
-          columns={columns}
-          data={data}
-          fieldToSortBy="email"
-        />
-      )}
-      {isLoading && <Loader />}
+      <DataTable
+        isLoading={isLoading}
+        columns={columns}
+        data={data}
+        fieldToSortBy="email"
+      />
     </div>
   );
 }

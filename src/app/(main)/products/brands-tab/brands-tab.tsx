@@ -10,16 +10,15 @@ export default function BrandsTab() {
 
   return (
     <div className="container mx-auto">
-       <div className="w-full flex justify-start items center">
+      <div className="w-full flex justify-start items center">
         <AddModal />
       </div>
-      {data && !isLoading && (
-        <DataTable
-          data={data}
-          columns={columns}
-          isFilterable={false}
-        />
-      )}
+      <DataTable
+        data={data}
+        columns={columns}
+        isFilterable={false}
+        isLoading={isLoading}
+      />
     </div>
   );
 }

@@ -16,14 +16,12 @@ export default function CustomersPage() {
           <AddModal>Add Customer</AddModal>
         </div>
       </div>
-      {data && (
-        <DataTable
-          columns={columns}
-          data={data}
-          fieldToSortBy="email"
-        />
-      )}
-      {isLoading && <Loader />}
+      <DataTable
+        columns={columns}
+        data={data}
+        isLoading={isLoading}
+        fieldToSortBy="email"
+      />
     </div>
   );
 }

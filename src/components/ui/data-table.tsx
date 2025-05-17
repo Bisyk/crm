@@ -21,6 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import React from "react";
+import Loader from "../loader";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -30,6 +31,7 @@ interface DataTableProps<TData, TValue> {
   initialState?: {
     sorting: { id: string; desc: boolean }[];
   };
+  isLoading?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -38,6 +40,7 @@ export function DataTable<TData, TValue>({
   isFilterable = true,
   fieldToSortBy,
   initialState,
+  isLoading,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -92,7 +95,7 @@ export function DataTable<TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
+          {data && table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map(row => (
               <TableRow
                 key={row.id}
@@ -105,11 +108,20 @@ export function DataTable<TData, TValue>({
                 ))}
               </TableRow>
             ))
+          ) : isLoading ? (
+            <TableRow>
+              <TableCell
+                colSpan={columns.length}
+                className="h-12 text-center"
+              >
+                <Loader />
+              </TableCell>
+            </TableRow>
           ) : (
             <TableRow>
               <TableCell
                 colSpan={columns.length}
-                className="h-24 text-center"
+                className="h-12 text-center"
               >
                 No results.
               </TableCell>
