@@ -8,6 +8,16 @@ export interface Product {
   lowStockThreshold: number;
   imageUrl: string;
 }
+
+export interface Order {
+  id: string;
+  orderDate: string | Date;
+  shopId: string;
+  employeeId: string;
+  customerId: string;
+  deliveryStatus: string;
+  paymentStatus: string;
+}
 export interface OrderItem {
   id?: string;
   quantity: number;

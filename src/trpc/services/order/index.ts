@@ -6,3 +6,4 @@ export * from "./getTotalRevenue";
 export * from "./getTotalSales";
 export * from "./delete";
 export * from "./getSalesByMonths";
+export * from "./getSalesByCategories";
