@@ -18,6 +18,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { trpc } from "@/trpc/client";
+import Loader from "./loader";
 const chartData = [
   { month: "January", clients: 186, leads: 80 },
   { month: "February", clients: 305, leads: 200 },
@@ -39,7 +40,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export default function ClientsVsLeadsChart() {
-  const { data } = trpc.statistics.getClientsVsLeads.useQuery();
+  const { data, isLoading } = trpc.statistics.getClientsVsLeads.useQuery();
 
   return (
     <Card className="h-full">
@@ -50,45 +51,49 @@ export default function ClientsVsLeadsChart() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
-          <AreaChart
-            accessibilityLayer
-            data={data}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={value => value.slice(0, 3)}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent indicator="dot" />}
-            />
-            <Area
-              dataKey="clients"
-              type="natural"
-              fill="var(--color-clients)"
-              fillOpacity={0.4}
-              stroke="var(--color-clients)"
-              stackId="a"
-            />
-            <Area
-              dataKey="leads"
-              type="natural"
-              fill="var(--color-leads)"
-              fillOpacity={0.4}
-              stroke="var(--color-leads)"
-              stackId="a"
-            />
-          </AreaChart>
-        </ChartContainer>
+        {isLoading && <Loader />}
+        {data && (
+          <ChartContainer config={chartConfig}>
+            <AreaChart
+              accessibilityLayer
+              data={data}
+              margin={{
+                left: 12,
+                right: 12,
+              }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="month"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                tickFormatter={value => value.slice(0, 3)}
+              />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent indicator="dot" />}
+              />
+              <Area
+                dataKey="clients"
+                type="natural"
+                fill="var(--color-clients)"
+                fillOpacity={0.4}
+                stroke="var(--color-clients)"
+                stackId="a"
+              />
+              <Area
+                dataKey="leads"
+                type="natural"
+                fill="var(--color-leads)"
+                fillOpacity={0.4}
+                stroke="var(--color-leads)"
+                stackId="a"
+              />
+            </AreaChart>
+          </ChartContainer>
+        )}
+        {!data && !isLoading && <div>Failed to load data</div>}
       </CardContent>
       <CardFooter>
         {/* <div className="flex w-full items-start gap-2 text-sm">
