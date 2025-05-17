@@ -6,7 +6,7 @@ import { columns } from "./columns";
 import AddModal from "./add-modal";
 
 export default function CategoriesTab() {
-  const { data, error, isLoading } = trpc.category.getAll.useQuery();
+  const { data, isLoading } = trpc.category.getAll.useQuery();
 
   return (
     <div className="container mx-auto">

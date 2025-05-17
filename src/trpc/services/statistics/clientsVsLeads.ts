@@ -86,7 +86,7 @@ function convertToChartData(
   });
 
   return sortedKeys.map(key => {
-    const [_, monthIndex] = key.split("-").map(Number);
+    const [, monthIndex] = key.split("-").map(Number);
     const { leads, clients } = dataMap.get(key)!;
     return {
       month: monthNames[monthIndex],

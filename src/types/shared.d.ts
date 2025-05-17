@@ -45,3 +45,24 @@ export interface Employee {
   phone: string;
   role: string;
 }
+
+export interface Lead {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  notes?: string;
+  shopId: string;
+  stage: string;
+  employeeId: string;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+  leadInterests: {
+    id: string;
+    quantity: number;
+    product: {
+      price: string;
+    };
+  }[];
+}

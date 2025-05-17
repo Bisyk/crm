@@ -1,6 +1,6 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
+// import { TrendingUp } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 
 import {
@@ -19,14 +19,6 @@ import {
 } from "@/components/ui/chart";
 import { trpc } from "@/trpc/client";
 import Loader from "./loader";
-const chartData = [
-  { month: "January", clients: 186, leads: 80 },
-  { month: "February", clients: 305, leads: 200 },
-  { month: "March", clients: 237, leads: 120 },
-  { month: "April", clients: 73, leads: 190 },
-  { month: "May", clients: 209, leads: 130 },
-  { month: "June", clients: 214, leads: 140 },
-];
 
 const chartConfig = {
   clients: {
