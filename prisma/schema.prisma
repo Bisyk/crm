@@ -1,0 +1,194 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  firstName String
+  lastName  String   @default("")
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  type      String // "ADMIN" or "EMPLOYEE"
+
+  // A user can own multiple shops
+  ownedShops Shop[] @relation("ShopOwner")
+}
+
+model Shop {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  address     String?
+  phone       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationship with shop owner
+  owner   User   @relation("ShopOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId String
+
+  employees Employee[]
+  customers Customer[]
+  leads     Lead[]
+  products  Product[]
+  orders    Order[]
+}
+
+model Employee {
+  id        String  @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String  @unique
+  phone     String?
+  role      String?
+  shopId    String
+
+  // An employee can work in multiple shops
+  shops Shop[]
+
+  position String?
+  salary   Decimal?
+  hireDate DateTime?
+
+  // Relationship with orders made by the employee
+  orders Order[]
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String?  @unique
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now())
+
+  // A customer belongs to a single shop (tenant)
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  shopId String
+
+  // Relationship with customer's orders
+  orders Order[]
+}
+
+model Lead {
+  id         String   @id @default(cuid())
+  firstName  String
+  lastName   String
+  email      String?  @unique
+  phone      String?
+  notes      String?
+  stage      String?
+  shopId     String
+  employeeId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // A lead belongs to a single shop (tenant)
+  shop Shop @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  leadInterests LeadInterest[]
+}
+
+model LeadInterest {
+  id        String  @id @default(cuid())
+  leadId    String
+  productId String
+  quantity  Int
+  price     Decimal
+  lead      Lead    @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id                String   @id @default(cuid())
+  name              String
+  description       String?
+  price             Decimal
+  stockCount        Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  imageUrl          String?
+  brandId           String?
+  categoryId        String?
+  lowStockThreshold Int?     @default(0)
+
+  // Product belongs to a specific shop
+  shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  shopId String
+
+  // Relationships with brand and category
+  brand    Brand?    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  // Relationship with orders
+  ordersItems   OrderItem[]
+  leadInterests LeadInterest[]
+}
+
+model Order {
+  id             String   @id @default(cuid())
+  orderDate      DateTime @default(now())
+  paymentStatus  String   @default("pending") // pending, processing, paid, failed, refunded, cancelled
+  deliveryStatus String   @default("processing") // processing, packed, shipped, in_transit, delivered, returned, cancelled 
+
+  // Order is specific to a shop (tenant)
+  shop   Shop   @relation(fields: [shopId], references: [id])
+  shopId String
+
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId String
+
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId String
+
+  // Order can have multiple items
+  items OrderItem[]
+}
+
+model OrderItem {
+  id       String  @id @default(cuid())
+  quantity Int
+  price    Decimal
+
+  // Relationships
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId String
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+}
+
+model Brand {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  shopId  String
+  Product Product[]
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  shopId  String
+  Product Product[]
+}
