@@ -17,7 +17,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-muted/50 rounded-xl">
           <InfoCard
             title="Total Revenue"
