@@ -6,7 +6,7 @@ interface InfoCardProps {
   title: string;
   icon: React.ReactNode;
   value: string;
-  secondary: string;
+  secondary?: string;
 }
 
 export default function InfoCard({

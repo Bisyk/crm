@@ -1,11 +1,11 @@
 "use client";
 import AreaChartComponent from "@/components/area-chart";
 import PieChartComponent from "@/components/pie-chart";
-import AreaChartLinearComponent from "@/components/area-chart-linear";
 import { DollarSign, Headset, PackageOpen, Users } from "lucide-react";
 import InfoCard from "@/components/info-card";
 import { trpc } from "@/trpc/client";
 import { formatCurrency } from "@/utils/currency/formatCurrency";
+import TotalSalesChart from "./total-sales-chart";
 
 export default function Dashboard() {
   const { data: totalCustomers } = trpc.customer.getTotalNumber.useQuery();
@@ -22,7 +22,7 @@ export default function Dashboard() {
           <InfoCard
             title="Total Revenue"
             value={totalRevenue ? `$ ${formatCurrency(totalRevenue)}` : "0"}
-            secondary="+20.1% from last month"
+            // secondary="+20.1% from last month"
             icon={<DollarSign />}
           />
         </div>
@@ -30,7 +30,7 @@ export default function Dashboard() {
           <InfoCard
             title="Total Sales"
             value={totalSales ?? "0"}
-            secondary="+20.1% from last month"
+            // secondary="+20.1% from last month"
             icon={<PackageOpen />}
           />
         </div>
@@ -38,7 +38,7 @@ export default function Dashboard() {
           <InfoCard
             title="Total Leads"
             value={totalLeads ?? "0"}
-            secondary="+201 from last month"
+            // secondary="+201 from last month"
             icon={<Headset />}
           />
         </div>
@@ -46,7 +46,7 @@ export default function Dashboard() {
           <InfoCard
             title="Total Customers"
             value={totalCustomers ?? "0"}
-            secondary="+201 from last month"
+            // secondary="+201 from last month"
             icon={<Users />}
           />
         </div>
@@ -56,7 +56,7 @@ export default function Dashboard() {
           <AreaChartComponent />
         </div>
         <div className="bg-muted/50 h-full rounded-xl">
-          <AreaChartLinearComponent />
+          <TotalSalesChart />
         </div>
         <div className="bg-muted/50 h-full rounded-xl">
           <PieChartComponent />

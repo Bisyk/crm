@@ -77,4 +77,9 @@ export const orderRouter = createTRPCRouter({
     }
     return order;
   }),
+  getByMonths: baseProcedure.query(async () => {
+    const salesByMonths = await orderService.getSalesByMonths();
+
+    return salesByMonths;
+  }),
 });
