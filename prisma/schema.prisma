@@ -69,12 +69,13 @@ model Employee {
 }
 
 model Customer {
-  id        String  @id @default(cuid())
+  id        String   @id @default(cuid())
   firstName String
   lastName  String
-  email     String? @unique
+  email     String?  @unique
   phone     String?
   address   String?
+  createdAt DateTime @default(now())
 
   // A customer belongs to a single shop (tenant)
   shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)

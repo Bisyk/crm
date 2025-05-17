@@ -17,6 +17,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { trpc } from "@/trpc/client";
 const chartData = [
   { month: "January", clients: 186, leads: 80 },
   { month: "February", clients: 305, leads: 200 },
@@ -37,7 +38,9 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export default function AreaChartComponent() {
+export default function ClientsVsLeadsChart() {
+  const { data } = trpc.statistics.getClientsVsLeads.useQuery();
+
   return (
     <Card className="h-full">
       <CardHeader>
@@ -50,7 +53,7 @@ export default function AreaChartComponent() {
         <ChartContainer config={chartConfig}>
           <AreaChart
             accessibilityLayer
-            data={chartData}
+            data={data}
             margin={{
               left: 12,
               right: 12,
@@ -88,7 +91,7 @@ export default function AreaChartComponent() {
         </ChartContainer>
       </CardContent>
       <CardFooter>
-        <div className="flex w-full items-start gap-2 text-sm">
+        {/* <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 font-medium leading-none">
               Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
@@ -97,7 +100,7 @@ export default function AreaChartComponent() {
               January - June 2024
             </div>
           </div>
-        </div>
+        </div> */}
       </CardFooter>
     </Card>
   );

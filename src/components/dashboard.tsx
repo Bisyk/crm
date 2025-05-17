@@ -1,11 +1,11 @@
 "use client";
-import AreaChartComponent from "@/components/area-chart";
 import { DollarSign, Headset, PackageOpen, Users } from "lucide-react";
 import InfoCard from "@/components/info-card";
 import { trpc } from "@/trpc/client";
 import { formatCurrency } from "@/utils/currency/formatCurrency";
 import TotalSalesChart from "./total-sales-chart";
 import SalesByCategoryChart from "./sales-by-category-chart";
+import ClientsVsLeadsChart from "./clients-vs-leads-chart";
 
 export default function Dashboard() {
   const { data: totalCustomers } = trpc.customer.getTotalNumber.useQuery();
@@ -53,7 +53,7 @@ export default function Dashboard() {
       </div>
       <div className="grid auto-rows-fr gap-4 md:grid-cols-3">
         <div className="bg-muted/50 h-full rounded-xl">
-          <AreaChartComponent />
+          <ClientsVsLeadsChart />
         </div>
         <div className="bg-muted/50 h-full rounded-xl">
           <TotalSalesChart />
