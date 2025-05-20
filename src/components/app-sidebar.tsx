@@ -7,6 +7,7 @@ import {
   Headset,
   LayoutDashboard,
   PackageSearch,
+  Send,
   ShieldUser,
   Users,
 } from "lucide-react";
@@ -38,6 +39,7 @@ const itemsForEmployee = [
   { title: "Leads Pipeline", url: "leads-pipeline", icon: Factory },
   { title: "Orders", url: "/orders", icon: CircleDollarSign },
   { title: "Products", url: "/products", icon: PackageSearch },
+  { title: "Campaigns", url: "/campaigns", icon: Send },
 ];
 
 const itemsForAdmin = [...itemsForEmployee];

@@ -192,3 +192,12 @@ model Category {
   shopId  String
   Product Product[]
 }
+
+model Campaign {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  template    String
+  shopId      String
+  createdAt   DateTime @default(now())
+}
