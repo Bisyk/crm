@@ -23,10 +23,19 @@ export const columns: ColumnDef<Campaign>[] = [
     header: "Description",
   },
   {
+    accessorKey: "template",
+    enableHiding: true,
+    cell: () => null,
+    header: () => null,
+  },
+  {
     accessorKey: "id",
     header: "Actions",
     cell: ({ row }) => {
       const id = row.getValue("id") as string;
+      const name = row.getValue("name") as string;
+      const template = row.getValue("template") as string;
+
       return (
         <div className="flex items-center gap-2">
           <DeleteDialog id={id}>
@@ -35,7 +44,11 @@ export const columns: ColumnDef<Campaign>[] = [
           <AddModal id={id}>
             <Pencil />
           </AddModal>
-          <SendModal id={id}>
+          <SendModal
+            id={id}
+            name={name}
+            template={template}
+          >
             <Send />
           </SendModal>
         </div>

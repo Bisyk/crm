@@ -1,31 +1,44 @@
 "use client";
 
-import { Copy } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { CustomersTable } from "./customers-table";
 import { columns } from "./columns";
 import { trpc } from "@/trpc/client";
 
 interface SendModalProps {
   id: string;
+  name: string;
+  template: string;
   children: React.ReactNode;
 }
 
-export default function SendModal({ id, children }: SendModalProps) {
+export default function SendModal({ id, name, template, children }: SendModalProps) {
   const { data: customerData } = trpc.customer.getAll.useQuery();
+
+  const sendMutation = trpc.mail.sendToMultiple.useMutation({
+    onSuccess: () => {
+      console.log("Emails sent successfully");
+    },
+    onError: error => {
+      console.error("Error sending emails:", error);
+    },
+  });
+
+  const handleSendEmails = (selectedEmails: string[]) => {
+    sendMutation.mutate({
+      emails: selectedEmails,
+      subject: name,
+      htmlTemplate: template,
+    });
+  };
 
   return (
     <Dialog>
@@ -42,6 +55,7 @@ export default function SendModal({ id, children }: SendModalProps) {
         <CustomersTable
           columns={columns}
           data={customerData}
+          onEmailsSend={handleSendEmails}
         />
       </DialogContent>
     </Dialog>
