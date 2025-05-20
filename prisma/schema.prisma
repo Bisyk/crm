@@ -192,3 +192,24 @@ model Category {
   shopId  String
   Product Product[]
 }
+
+model Campaign {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  template    String
+  shopId      String
+  createdAt   DateTime @default(now())
+}
+
+model ShopSmtpSettings {
+  id           String @id @default(cuid())
+  shopId       String @unique
+  smtpHost     String
+  smtpPort     Int
+  smtpUser     String
+  smtpFrom     String
+  smtpPassword String
+  iv           String
+  tag          String
+}

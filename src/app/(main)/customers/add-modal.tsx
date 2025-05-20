@@ -49,8 +49,6 @@ export default function AddModal({ id, children }: AddModalProps) {
     }
   }, [customerData]);
 
-  console.log(customerData);
-
   const mutation = trpc.customer.create.useMutation({
     onSuccess: () => {
       resetForm();
@@ -104,7 +102,7 @@ export default function AddModal({ id, children }: AddModalProps) {
   return (
     <Dialog>
       <Toaster richColors />
-       <div className="w-full flex justify-start items center">
+      <div className="w-full flex justify-start items center">
         <DialogTrigger asChild>
           <Button variant="outline">{children}</Button>
         </DialogTrigger>

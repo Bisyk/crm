@@ -1,11 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { ChevronsUpDown, Plus, Store } from "lucide-react";
+import { ChevronsUpDown, Plus, Settings, Store } from "lucide-react";
 
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -18,6 +19,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useRouter } from "next/navigation";
 
 export function TeamSwitcher({
   teams,
@@ -29,6 +31,7 @@ export function TeamSwitcher({
 }) {
   const { isMobile } = useSidebar();
   const [activeTeam, setActiveTeam] = React.useState(teams[0]);
+  const router = useRouter();
 
   if (!activeTeam) {
     return null;
@@ -75,7 +78,6 @@ export function TeamSwitcher({
                 <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
-            <DropdownMenuSeparator />
             <DropdownMenuItem
               className="gap-2 p-2"
               disabled
@@ -85,6 +87,13 @@ export function TeamSwitcher({
               </div>
               <div className="text-muted-foreground font-medium">Add Shops</div>
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem onClick={() => router.push("/settings")}>
+                <Settings />
+                Settings
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
