@@ -8,6 +8,7 @@ import { columns } from "./columns";
 import AddModal from "./add-modal";
 import ProductsGrid from "./products-grid";
 import Loader from "@/components/loader";
+import { ProductsApi } from "./products-api";
 
 export default function ProductsTab() {
   const { data, error, isLoading } = trpc.product.getAll.useQuery();
@@ -19,6 +20,7 @@ export default function ProductsTab() {
         className="w-full flex justify-end items-end"
       >
         <div className="flex gap-2">
+          <ProductsApi />
           <AddModal>Add Product</AddModal>
           <TabsList className="">
             <TabsTrigger value="grid">

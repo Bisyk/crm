@@ -72,4 +72,8 @@ export const productRouter = createTRPCRouter({
 
     return product;
   }),
+  getAllByShopId: baseProcedure.input(z.string()).query(async opts => {
+    const products = await productService.getAllByShopId(opts.input);
+    return products;
+  }),
 });
