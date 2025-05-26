@@ -8,17 +8,14 @@ import Link from "next/link";
 import { trpc } from "@/trpc/client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signupSchema } from "@/schemas/signup.schema";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const [shopName, setShopName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-
   const router = useRouter();
 
   const mutation = trpc.auth.signup.useMutation({
@@ -27,16 +24,29 @@ export function SignupForm({
     },
   });
 
-  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      shopName: "",
+      email: "",
+      password: "",
+      firstName: "",
+      lastName: "",
+    },
+  });
 
-    mutation.mutate({ email, password, firstName, lastName, shopName });
+  const onSubmit = (data: any) => {
+    mutation.mutate(data);
   };
 
   return (
     <form
       className={cn("flex flex-col gap-6", className)}
-      onSubmit={handleSignup}
+      onSubmit={handleSubmit(onSubmit)}
       {...props}
     >
       <div className="flex flex-col items-center gap-2 text-center">
@@ -49,60 +59,67 @@ export function SignupForm({
         <div className="grid gap-3">
           <Label htmlFor="email">Shop Name</Label>
           <Input
-            value={shopName}
-            onChange={e => setShopName(e.target.value)}
+            {...register("shopName")}
             id="shop-name"
             type="text"
             placeholder="My Shop"
-            required
           />
+          {errors.shopName && (
+            <p className="text-sm text-red-500">{errors.shopName.message}</p>
+          )}
         </div>
         <div className="grid gap-3">
           <Label htmlFor="email">Your Name</Label>
           <Input
-            value={firstName}
-            onChange={e => setFirstName(e.target.value)}
+            {...register("firstName")}
             id="first-name"
             type="text"
             placeholder="Yaroslav"
-            required
           />
+          {errors.firstName && (
+            <p className="text-sm text-red-500">{errors.firstName.message}</p>
+          )}
         </div>
         <div className="grid gap-3">
-          <Label htmlFor="email">Your Surname</Label>
+          <Label htmlFor="email">Your Last Name</Label>
           <Input
-            value={lastName}
-            onChange={e => setLastName(e.target.value)}
+            {...register("lastName")}
             id="last-name"
             type="text"
             placeholder="Bisyk"
-            required
           />
+          {errors.lastName && (
+            <p className="text-sm text-red-500">{errors.lastName.message}</p>
+          )}
         </div>
         <div className="grid gap-3">
           <Label htmlFor="email">Email</Label>
           <Input
-            value={email}
-            onChange={e => setEmail(e.target.value)}
+            {...register("email")}
             id="email"
             type="email"
             placeholder="m@example.com"
-            required
           />
+          {errors.email && (
+            <p className="text-sm text-red-500">{errors.email.message}</p>
+          )}
         </div>
         <div className="grid gap-3">
           <div className="flex items-center">
             <Label htmlFor="password">Password</Label>
           </div>
           <Input
-            value={password}
-            onChange={e => setPassword(e.target.value)}
+            {...register("password")}
             id="password"
             type="password"
-            required
+            placeholder="********"
           />
+          {errors.password && (
+            <p className="text-sm text-red-500">{errors.password.message}</p>
+          )}
         </div>
         <Button
+          disabled={isSubmitting}
           type="submit"
           className="w-full"
         >

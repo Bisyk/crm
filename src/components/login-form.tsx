@@ -8,14 +8,14 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { trpc } from "@/trpc/client";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, type LoginFormInputs } from "@/schemas/login.schema";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
   const router = useRouter();
 
   const mutation = trpc.auth.login.useMutation({
@@ -24,16 +24,26 @@ export function LoginForm({
     },
   });
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    mutation.mutate({ email, password });
+  const onSubmit = (data: LoginFormInputs) => {
+    mutation.mutate(data);
   };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormInputs>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
   return (
     <form
       className={cn("flex flex-col gap-6", className)}
-      onSubmit={handleLogin}
+      onSubmit={handleSubmit(onSubmit)}
       {...props}
     >
       <div className="flex flex-col items-center gap-2 text-center">
@@ -46,13 +56,14 @@ export function LoginForm({
         <div className="grid gap-3">
           <Label htmlFor="email">Email</Label>
           <Input
-            onChange={e => setEmail(e.target.value)}
-            value={email}
             id="email"
-            type="email"
             placeholder="m@example.com"
-            required
+            disabled={isSubmitting}
+            {...register("email")}
           />
+          {errors.email && (
+            <p className="text-sm text-red-500">{errors.email.message}</p>
+          )}
         </div>
         <div className="grid gap-3">
           <div className="flex items-center">
@@ -65,16 +76,20 @@ export function LoginForm({
             </a>
           </div>
           <Input
-            onChange={e => setPassword(e.target.value)}
-            value={password}
             id="password"
             type="password"
-            required
+            placeholder="********"
+            disabled={isSubmitting}
+            {...register("password")}
           />
+          {errors.password && (
+            <p className="text-sm text-red-500">{errors.password.message}</p>
+          )}
         </div>
         <Button
           type="submit"
           className="w-full"
+          disabled={isSubmitting}
         >
           Login
         </Button>
